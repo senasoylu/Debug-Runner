@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,41 +7,59 @@ using UnityEngine;
 public class Player1 : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Rigidbody playerRb;
-    public float playerSpeed = 2.0f;
-    public float maxX = 10.0f;
+    
 
+ 
+    private GameSettings gameSettings;
     void Start()
     {
-        playerRb = GetComponent<Rigidbody>();
-
+        gameSettings=FindObjectOfType<GameSettings>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        MoveForward();
 
+        GetInputs();
 
-
-
+        MoveSideways();
 
     }
-    private void FixedUpdate()
+
+    private void MoveSideways()
     {
-       // playerRb.velocity = new Vector3(0, playerRb.velocity.y, playerSpeed);
-       transform.Translate(Vector3.forward*Time.deltaTime*playerSpeed);
-        float horizontalInput = Input.GetAxis("Horizontal");
-        transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * playerSpeed);
+        Vector3 desiredPosition;  // hedef pozisyon
+        desiredPosition = new Vector3(gameSettings.firstLanePositionX + gameSettings.currentLaneIndex * gameSettings.distanceBetweenLines, transform.position.y, transform.position.z);
+        Vector3 currentPosition = transform.position;
+        Vector3 direction = desiredPosition - currentPosition;
+        direction = Vector3.Normalize(direction);
+        float frameSpeed = gameSettings.playerSidewaySpeed * Time.deltaTime;
+        float distance = Vector3.Distance(currentPosition, desiredPosition);
 
-        if (transform.position.x < -maxX)
+        if (distance < frameSpeed)
         {
-            transform.position = new Vector3(-maxX, transform.position.y, transform.position.z);
+            frameSpeed = distance;
         }
-        if (transform.position.x > maxX)
+        transform.position = currentPosition + direction * frameSpeed;
+
+    }
+
+    private void GetInputs()
+    {
+        if (Input.GetKeyDown(KeyCode.D) && gameSettings.currentLaneIndex < gameSettings.laneCount - 1) //geçtiðim index þerit indexinden küçükse bir saða d ye basýnca
         {
-            transform.position = new Vector3(maxX, transform.position.y, transform.position.z);
+            gameSettings.currentLaneIndex++;
+        }
+        if (Input.GetKeyDown(KeyCode.A) && gameSettings.currentLaneIndex > 0) //geçtiðim index sýfýrdan büyükse bir sola a ya basýnca
+        {
+            gameSettings.currentLaneIndex--;
         }
     }
 
+    private void MoveForward()
+    {
+        transform.Translate(Vector3.forward * Time.deltaTime * gameSettings.playerForwardSpeed);
+    }
 
 }
