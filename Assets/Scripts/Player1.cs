@@ -2,25 +2,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
-
+using TMPro;
 public class Player1 : MonoBehaviour
 {
     // Start is called before the first frame update
-    
 
- 
+
+
     private GameSettings gameSettings;
+    private GameManager gameManager;
+
+    public bool canMove = true;
     void Start()
     {
-        gameSettings=FindObjectOfType<GameSettings>();
+        gameSettings = FindObjectOfType<GameSettings>();
+        gameManager = FindObjectOfType<GameManager>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        MoveForward();
 
+
+        if (!gameManager.gameStarted || !canMove) return;
+        MoveForward();
         GetInputs();
 
         MoveSideways();
@@ -57,9 +65,27 @@ public class Player1 : MonoBehaviour
         }
     }
 
-    private void MoveForward()
+    private void MoveForward()  //bura
     {
         transform.Translate(Vector3.forward * Time.deltaTime * gameSettings.playerForwardSpeed);
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {
+
+            canMove = false;
+            gameManager.ShowGameOver();
+
+        }
+        else if (other.CompareTag("Collectible"))
+        {
+            gameManager.AddScore(10);
+            other.gameObject.SetActive(false);
+
+
+        }
+    }
+
 
 }

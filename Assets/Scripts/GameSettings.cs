@@ -18,7 +18,7 @@ public class GameSettings : MonoBehaviour
    
     public int obstacleCount;
     public GameObject obstaclePrefab;
-    public int zDifferenceBetweenObstacle;
+   // public int zDifferenceBetweenObstacle;
     public List<GameObject> ObstacleObjects = new List<GameObject>();
     public float LastObstaclePositionZ;
 
@@ -29,7 +29,17 @@ public class GameSettings : MonoBehaviour
     public GameObject platformParentPrefab;
     public List<GameObject> platformParentObjects = new List<GameObject>();
 
-  
+
+    public GameObject collectiblePrefab;
+    public int collectibleCount = 20;
+    //public int zDifferenceBetweenCollectibles;
+    public List<GameObject> CollectibleObjects=new List<GameObject>();
+    public float lastCollectiblePositionZ;
+
+
+    
+
+
 
 
     void Start()
