@@ -1,74 +1,70 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
 
 public class GameManager : MonoBehaviour
 {
-    public TextMeshProUGUI gameOverText;
-    public Button restartButton;
-    public Button startScreen;
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI lastScoreText;
+    public delegate void OnScoreUpdatedDelegate(int score);
+    public static OnScoreUpdatedDelegate OnScoreUpdatedEvent;
 
+    public delegate void OnGameStartedDelegate();
+    public static OnGameStartedDelegate OnGameStartedEvent;
 
-    public bool gameStarted = false;
-    private int score = 0;
+    public delegate void OnGameOverDelegate(int score);
+    public static OnGameOverDelegate OnGameOverEvent;
 
+    private int _score = 0;
+    private int _addScore = 10;
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        restartButton.onClick.AddListener(RestartGame);
-        startScreen.onClick.AddListener(StartScreen);
+        Player.OnObstacleHitEvent += OnObstacleHit;
+        Player.OnCollectibleHitEvent += OnCollectibleHit;
 
-        startScreen.gameObject.SetActive(true);
-        scoreText.gameObject.SetActive(true);
-        gameOverText.gameObject.SetActive(false);
-        restartButton.gameObject.SetActive(false);
-        lastScoreText.gameObject.SetActive(false);
-        UpdateScoreText();
+        UIManager.OnRestartButtonClickedEvent += OnRestartButtonClicked;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-
+        StartScreen();
     }
-    public void StartScreen()
+
+    private void StartScreen()
     {
-        gameStarted = true;
-        startScreen.gameObject.SetActive(false);
+        OnGameStartedEvent?.Invoke();
     }
-    public void ShowGameOver()
+
+    private void OnObstacleHit()
     {
-
-
-        gameOverText.text = "Game Over";
-        gameOverText.gameObject.SetActive(true);
-
-        lastScoreText.text = "Last Score: " + score;
-        lastScoreText.gameObject.SetActive(true);
-        scoreText.gameObject.SetActive(false);
-
-        restartButton.gameObject.SetActive(true);
+        OnGameOverEvent?.Invoke(_score);
     }
+
+    private void OnRestartButtonClicked()
+    {
+        RestartGame();
+    }
+
+    private void OnCollectibleHit()
+    {
+       AddScore(_addScore);
+    }
+
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
     public void AddScore(int points)
     {
-        score += points;
-        UpdateScoreText();
+        _score += points;
+
+        OnScoreUpdatedEvent?.Invoke(_score);
     }
-    public void UpdateScoreText()
+
+    private void OnDisable()
     {
+        Player.OnObstacleHitEvent -= OnObstacleHit;
+        Player.OnCollectibleHitEvent -= OnCollectibleHit;
 
-        scoreText.text = "Score: " + score;
+        UIManager.OnRestartButtonClickedEvent -= OnRestartButtonClicked;
     }
-
 }

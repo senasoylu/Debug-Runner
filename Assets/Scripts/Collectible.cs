@@ -1,58 +1,52 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-    // Start is called before the first frame update
-    GameSettings gameSettings;
-    void Start()
-    {
-        gameSettings = FindObjectOfType<GameSettings>();
-        SpawnCollectible();
+    private GameSettings _gameSettings;
 
+    private void Start()
+    {
+        _gameSettings = FindObjectOfType<GameSettings>();
+        SpawnCollectible();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         MoveCollectible();
     }
-    public void SpawnCollectible()
+
+    private void SpawnCollectible()
     {
-        for (int i = 0; i < gameSettings.collectibleCount; i++)
+        for (int i = 0; i < _gameSettings.collectibleCount; i++)
         {
-            int selectedLaneIndex = Random.Range(0, gameSettings.laneCount);
-            float xPosition = gameSettings.firstLanePositionX + selectedLaneIndex * gameSettings.distanceBetweenLines;
+            int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount);
+            float xPosition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLines;
             float zDifferenceBetweenCollectibles = Random.Range(5f, 8f);
 
-            GameObject spawnedCollectibleParent = Instantiate(gameSettings.collectiblePrefab);
+            GameObject spawnedCollectibleParent = Instantiate(_gameSettings.collectiblePrefab);
             spawnedCollectibleParent.transform.position = new Vector3(xPosition, 0, spawnedCollectibleParent.transform.position.z + (i * zDifferenceBetweenCollectibles));
 
-            gameSettings.CollectibleObjects.Add(spawnedCollectibleParent);
-            gameSettings.lastCollectiblePositionZ = spawnedCollectibleParent.transform.position.z;
-
-
+            _gameSettings.CollectibleObjects.Add(spawnedCollectibleParent);
+            _gameSettings.lastCollectiblePositionZ = spawnedCollectibleParent.transform.position.z;
         }
     }
-    public void MoveCollectible()
+
+    private void MoveCollectible()
     {
-        foreach (GameObject collectible in gameSettings.CollectibleObjects)
+        foreach (GameObject collectible in _gameSettings.CollectibleObjects)
         {
-            if (collectible.transform.position.z < gameSettings.player.transform.position.z - 20f)
+            if (collectible.transform.position.z < _gameSettings.player.transform.position.z - 20f)
             {
                 collectible.gameObject.SetActive(true);
                 float zDifferenceBetweenCollectibles = Random.Range(5f, 8f);
 
-                float newZ = gameSettings.lastCollectiblePositionZ + zDifferenceBetweenCollectibles;
-                int selectedLaneIndex = Random.Range(0, gameSettings.laneCount); // þerit aralýðý
-                float xposition = gameSettings.firstLanePositionX + selectedLaneIndex * gameSettings.distanceBetweenLines;
+                float newZ = _gameSettings.lastCollectiblePositionZ + zDifferenceBetweenCollectibles;
+                int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount); // þerit aralýðý
+                float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLines;
 
                 collectible.transform.position = new Vector3(xposition, 0, newZ);
-                gameSettings.lastCollectiblePositionZ = newZ;
-
+                _gameSettings.lastCollectiblePositionZ = newZ;
             }
-
         }
     }
 }
