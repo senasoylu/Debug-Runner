@@ -20,7 +20,7 @@ public class Collectible : MonoBehaviour
         for (int i = 0; i < _gameSettings.collectibleCount; i++)
         {
             int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount);
-            float xPosition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLines;
+            float xPosition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
             float zDifferenceBetweenCollectibles = Random.Range(5f, 8f);
 
             GameObject spawnedCollectibleParent = Instantiate(_gameSettings.collectiblePrefab);
@@ -42,7 +42,7 @@ public class Collectible : MonoBehaviour
 
                 float newZ = _gameSettings.lastCollectiblePositionZ + zDifferenceBetweenCollectibles;
                 int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount); // þerit aralýðý
-                float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLines;
+                float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
 
                 collectible.transform.position = new Vector3(xposition, 0, newZ);
                 _gameSettings.lastCollectiblePositionZ = newZ;

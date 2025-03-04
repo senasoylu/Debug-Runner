@@ -10,8 +10,10 @@ public class Player : MonoBehaviour
 
     private GameSettings _gameSettings;
 
-    private bool _isGameStarted;
+    public Animator animator;
 
+    private bool _isGameStarted;
+   
     private void OnEnable()
     {
         InputController.OnPlayerPressedLeftButtonEvent += OnPlayerPressedLeftButton;
@@ -56,7 +58,8 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _gameSettings = FindObjectOfType<GameSettings>();
+        _gameSettings = FindObjectOfType<GameSettings>(); 
+         animator = GetComponent<Animator>();
     }
   
     private void Update()
@@ -73,7 +76,7 @@ public class Player : MonoBehaviour
     private void MoveSideways()
     {
         Vector3 desiredPosition;  // hedef pozisyon
-        desiredPosition = new Vector3(_gameSettings.firstLanePositionX + _gameSettings.currentLaneIndex * _gameSettings.distanceBetweenLines, transform.position.y, transform.position.z);
+        desiredPosition = new Vector3(_gameSettings.firstLanePositionX + _gameSettings.currentLaneIndex * _gameSettings.distanceBetweenLanes, transform.position.y, transform.position.z);
         Vector3 currentPosition = transform.position;
         Vector3 direction = desiredPosition - currentPosition;
         direction = Vector3.Normalize(direction);
@@ -98,13 +101,18 @@ public class Player : MonoBehaviour
         if (other.CompareTag("Obstacle"))
         {
             OnObstacleHitEvent?.Invoke();
+            TriggerFall();
         }
-
         else if (other.CompareTag("Collectible"))
         {
             OnCollectibleHitEvent?.Invoke();
             other.gameObject.SetActive(false);
         }
+    }
+    private void TriggerFall()
+    {
+        animator.SetBool("isFalling", true);
+        _isGameStarted = false;
     }
 }
 

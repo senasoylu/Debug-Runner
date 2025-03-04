@@ -21,7 +21,7 @@ public class SpawnEnemy : MonoBehaviour
         {
             int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount); // þerit aralýðý
 
-            float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLines;
+            float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
 
             GameObject spawnedPlatformParent = Instantiate(_gameSettings.obstaclePrefab);
 
@@ -45,7 +45,7 @@ public class SpawnEnemy : MonoBehaviour
 
                 int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount); // þerit aralýðý
 
-                float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLines;
+                float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
 
                 obstacle.transform.position = new Vector3(xposition, 0, newZ);
                 _gameSettings.LastObstaclePositionZ = newZ;

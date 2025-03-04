@@ -7,7 +7,7 @@ public class GameSettings : MonoBehaviour
     // Start is called before the first frame update
 
     public float firstLanePositionX = -6.0f;
-    public float distanceBetweenLines = 5.0f;// þeritler arasý mesafe
+    public float distanceBetweenLanes = 5.0f;// þeritler arasý mesafe
     public int currentLaneIndex = 1; //baþlangýç index
     public int platformCount;
     public int laneCount = 5; //þerit sayýsý 

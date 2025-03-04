@@ -30,7 +30,7 @@ public class PlatformSpawner : MonoBehaviour
     {
         for (int i = 0; i < _gameSettings.laneCount; i++)
         {
-            float xPosition = (i - (_gameSettings.laneCount - 1) / 2f) * _gameSettings.distanceBetweenLines;
+            float xPosition = (i - (_gameSettings.laneCount - 1) / 2f) * _gameSettings.distanceBetweenLanes;
             Vector3 spawnPosition = new Vector3(xPosition, 0, platformObj.transform.position.z - _gameSettings.platformLength / 2);
 
             GameObject newLane = Instantiate(_gameSettings.laneSpawnPlatformPrefab, spawnPosition, Quaternion.identity);

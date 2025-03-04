@@ -1340,6 +1340,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6de541a6e32d9cd4fbf6e4a7123657ae, type: 2}
+    - target: {fileID: 5866666021909216657, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'mixamorig9:Hips'\n\tTransform 'mixamorig9:LeftHandRing3'\n\tTransform
+        'mixamorig9:RightHandRing1'\n\tTransform 'mixamorig9:LeftHandPinky3'\n\tTransform
+        'mixamorig9:LeftHandIndex2'\n\tTransform 'mixamorig9:RightHandThumb2'\n\tTransform
+        'mixamorig9:LeftForeArm'\n\tTransform 'mixamorig9:LeftFoot'\n\tTransform
+        'mixamorig9:RightHandThumb3'\n\tTransform 'mixamorig9:RightHandPinky1'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'\n\tFrom animation clip 'mixamo.com'\n\tFrom
+        animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1381,7 +1405,7 @@ CapsuleCollider:
   m_Radius: 0.3
   m_Height: 1.8
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1696957043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,6 +1418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e2df4df2c612f4b8792fd3596a2029, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 1696957045}
 --- !u!54 &1696957044
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1421,6 +1446,11 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 82
   m_CollisionDetection: 0
+--- !u!95 &1696957045 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+  m_PrefabInstance: {fileID: 1696957040}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1762016816
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,7 +1894,7 @@ MonoBehaviour:
   obstaclePrefab: {fileID: 451077674606121524, guid: 888eea2636cfe6a4e9d5f579fbbc76f1, type: 3}
   ObstacleObjects: []
   LastObstaclePositionZ: 0
-  player: {fileID: 0}
+  player: {fileID: 1696957041}
   laneSpawnPlatformPrefab: {fileID: 1210189402689409947, guid: 7c387562f1aa63c4aa9053ed6bf4c32f, type: 3}
   platformParentPrefab: {fileID: 2008644894683680414, guid: 135fa405e4a177141bfd8715d5c8a99b, type: 3}
   platformParentObjects: []
