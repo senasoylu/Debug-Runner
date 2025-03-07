@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 30970122}
   - component: {fileID: 30970121}
   m_Layer: 0
-  m_Name: EnemySpawner
+  m_Name: Obstacles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1882,13 +1882,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a9d45e2a8763994e87c17054d595948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstLanePositionX: -6
-  distanceBetweenLines: 3
+  firstLanePositionX: -2.7
+  distanceBetweenLanes: 1.12
   currentLaneIndex: 2
   platformCount: 3
   laneCount: 5
   platformLength: 100
-  playerForwardSpeed: 20
+  playerForwardSpeed: 10
   playerSidewaySpeed: 20
   obstacleCount: 25
   obstaclePrefab: {fileID: 451077674606121524, guid: 888eea2636cfe6a4e9d5f579fbbc76f1, type: 3}

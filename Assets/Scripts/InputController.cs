@@ -10,13 +10,25 @@ public class InputController : MonoBehaviour
    
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {  
-            OnPlayerPressedLeftButtonEvent?.Invoke();
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
+        if (Input.touchCount > 0)
         {
-            OnPlayerPressedRightButtonEvent?.Invoke();
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                // Dokunulan noktanýn ekranýn sol yarýsýnda olup olmadýðýna bakýyoruz
+                if (touch.position.x < Screen.width / 2)
+                    OnPlayerPressedLeftButtonEvent?.Invoke();
+                else
+                    OnPlayerPressedRightButtonEvent?.Invoke();
+            }
+        }
+        // Editörde test için fare týklamasý kontrolü
+        else if (Input.GetMouseButtonDown(0))
+        {
+            if (Input.mousePosition.x < Screen.width / 2)
+                OnPlayerPressedLeftButtonEvent?.Invoke();
+            else
+                OnPlayerPressedRightButtonEvent?.Invoke();
         }
     }
 }

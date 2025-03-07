@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     }
     private void OnPlayerPressedRightButton()
     {
-        if (_gameSettings.currentLaneIndex < _gameSettings.laneCount)
+        if (_gameSettings.currentLaneIndex < _gameSettings.laneCount-1)
         {
             _gameSettings.currentLaneIndex++;
         }
