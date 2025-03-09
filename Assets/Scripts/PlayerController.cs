@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public delegate void OnObstacleHitDelegate();
     public static OnObstacleHitDelegate OnObstacleHitEvent;
@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public static OnCollectibleHitDelegate OnCollectibleHitEvent;
 
     private GameSettings _gameSettings;
-
+     
     public Animator animator;
 
     private bool _isGameStarted;

@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Player.OnObstacleHitEvent += OnObstacleHit;
-        Player.OnCollectibleHitEvent += OnCollectibleHit;
+        PlayerController.OnObstacleHitEvent += OnObstacleHit;
+        PlayerController.OnCollectibleHitEvent += OnCollectibleHit;
 
         UIManager.OnRestartButtonClickedEvent += OnRestartButtonClicked;
     }
@@ -62,8 +62,8 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
-        Player.OnObstacleHitEvent -= OnObstacleHit;
-        Player.OnCollectibleHitEvent -= OnCollectibleHit;
+        PlayerController.OnObstacleHitEvent -= OnObstacleHit;
+        PlayerController.OnCollectibleHitEvent -= OnCollectibleHit;
 
         UIManager.OnRestartButtonClickedEvent -= OnRestartButtonClicked;
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlatformSpawner : MonoBehaviour
+public class PlatformController : MonoBehaviour
 {
     private GameSettings _gameSettings;
 
@@ -9,7 +9,7 @@ public class PlatformSpawner : MonoBehaviour
         _gameSettings = FindObjectOfType<GameSettings>();
         SpawnPlatformParents();
     }
-
+    
     private void SpawnPlatformParents()
     {
         for (int i = 0; i < _gameSettings.platformCount; i++)
@@ -23,14 +23,15 @@ public class PlatformSpawner : MonoBehaviour
 
     private void Update()
     {
-        EndlessPlatform();
+        MovePlatformsIfNeeded();
     } 
 
     private void SpawnLanesForPlatform(GameObject platformObj)
     {
         for (int i = 0; i < _gameSettings.laneCount; i++)
         {
-            float xPosition = (i - (_gameSettings.laneCount - 1) / 2f) * _gameSettings.distanceBetweenLanes;
+            float xPosition = _gameSettings.firstLanePositionX+(i * _gameSettings.distanceBetweenLanes);
+          
             Vector3 spawnPosition = new Vector3(xPosition, 0, platformObj.transform.position.z - _gameSettings.platformLength / 2);
 
             GameObject newLane = Instantiate(_gameSettings.laneSpawnPlatformPrefab, spawnPosition, Quaternion.identity);
@@ -38,7 +39,7 @@ public class PlatformSpawner : MonoBehaviour
         }
     }
 
-    private void EndlessPlatform()
+    private void MovePlatformsIfNeeded()
     {
         foreach (GameObject currentPlatformParent in _gameSettings.platformParentObjects)
         {

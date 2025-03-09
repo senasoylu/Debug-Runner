@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SpawnEnemy : MonoBehaviour
+public class ObstacleController : MonoBehaviour
 {
     private GameSettings _gameSettings;
 
