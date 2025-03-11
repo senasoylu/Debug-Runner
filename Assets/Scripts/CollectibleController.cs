@@ -47,7 +47,7 @@ public class CollectibleController : MonoBehaviour
         int laneCountWithConnections = _gameSettings.laneCount + _gameSettings.laneCount - 1;
         bool isGoingRight = Random.value > 0.5f;
 
-        if (_lastSelectedLaneIndex == laneCountWithConnections && isGoingRight == true)
+        if (_lastSelectedLaneIndex == laneCountWithConnections-1 && isGoingRight == true)
         {
             isGoingRight = false;
         }

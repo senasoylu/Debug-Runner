@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameSettings : MonoBehaviour
 {
     #region Player
-    [ Header("Player Related")]
+    [Header("Player Related")]
     public GameObject player;
     public float firstLanePositionX = -6.0f;
     public float distanceBetweenLanes = 5.0f;// þeritler arasý mesafe
@@ -20,6 +20,8 @@ public class GameSettings : MonoBehaviour
     [Header("Obstacle Related")]
     public int obstacleCount;
     public GameObject obstaclePrefab;
+    public GameObject obstaclePrefab2;
+    public List<GameObject> obstacleObjects2=new List<GameObject>();
     public List<GameObject> ObstacleObjects = new List<GameObject>();
     public float LastObstaclePositionZ;
     #endregion
@@ -40,6 +42,14 @@ public class GameSettings : MonoBehaviour
     public float zMaxDifferenceBetweenCollectibles = 2f;
     public float zMinDifferenceBetweenCollectibles = 5f;
     public float distanceMovingToPlayer = 20f;
-
+    #endregion
+    [Space]
+    #region
+    [Header("Jumping")]
+    public float jumpDuration = 1f;  // Zýplamanýn toplam süresi (saniye cinsinden)
+    public float jumpHeight = 3f;    // Maksimum zýplama yüksekliði
+    public bool isJumping = false;  // Oyuncu þu anda zýplýyor mu?
+    public float jumpTimer = 0f;    // Zýplama süresi boyunca geçen zaman
+    public float groundY;           // Zýplama baþlamadan önce oyuncunun yer seviyesindeki y konumu
     #endregion
 }

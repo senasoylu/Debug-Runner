@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ObstacleController : MonoBehaviour
 {
@@ -7,49 +8,51 @@ public class ObstacleController : MonoBehaviour
     private void Start()
     {
         _gameSettings = FindObjectOfType<GameSettings>();
-        EnemySpawn();
+        SpawnObstacle();
     }
 
     private void Update()
     {
-        MoveObstacle();
+        CheckPositionObstacle();
     }
 
-    private void EnemySpawn()
+    private void SpawnObstacle()
     {
         for (int i = 0; i < _gameSettings.obstacleCount; i++)
         {
-            int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount); // þerit aralýðý
-
-            float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
+         /*  bool useSecondPrefab = Random.value > 0.5f;
+            GameObject chosenPrefab = useSecondPrefab
+                ? _gameSettings.obstaclePrefab2
+                : _gameSettings.obstaclePrefab; */
 
             GameObject spawnedPlatformParent = Instantiate(_gameSettings.obstaclePrefab);
-
-            float zDifferenceBetweenObstacle = Random.Range(9f, 15f);
-            spawnedPlatformParent.transform.position = new Vector3(xposition, 0, spawnedPlatformParent.transform.position.z + (i * zDifferenceBetweenObstacle));
-
             _gameSettings.ObstacleObjects.Add(spawnedPlatformParent);
-            _gameSettings.LastObstaclePositionZ = spawnedPlatformParent.transform.position.z;
+            RePositionObstacle(spawnedPlatformParent);
+        }
+    } 
+
+    private void CheckPositionObstacle()
+    {
+        for (int index = 0; index < _gameSettings.ObstacleObjects.Count; index++)
+        {
+            GameObject obstacle = _gameSettings.ObstacleObjects[index];
+            if (obstacle.transform.position.z < _gameSettings.player.transform.position.z - 20f)
+            {
+                RePositionObstacle(obstacle);
+            }
         }
     }
 
-    private void MoveObstacle()
+    private void RePositionObstacle(GameObject obstacle)
     {
-        foreach (GameObject obstacle in _gameSettings.ObstacleObjects)
-        {
-            if (obstacle.transform.position.z < _gameSettings.player.transform.position.z - 20f)
-            {
-                float zDifferenceBetweenObstacle = Random.Range(9f, 15f);
-                float newZ = _gameSettings.LastObstaclePositionZ + zDifferenceBetweenObstacle;
-               
+        int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount);
+        float xPosition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
 
-                int selectedLaneIndex = Random.Range(0, _gameSettings.laneCount); // þerit aralýðý
+        float zRandomOffset = Random.Range(9f, 15f);
+        float newZPosition = _gameSettings.LastObstaclePositionZ + zRandomOffset;
+     
+        obstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
+        _gameSettings.LastObstaclePositionZ = obstacle.transform.position.z;
 
-                float xposition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
-
-                obstacle.transform.position = new Vector3(xposition, 0, newZ);
-                _gameSettings.LastObstaclePositionZ = newZ;
-            }
-        }
     }
 }
