@@ -21,7 +21,7 @@ public class GameSettings : MonoBehaviour
     public int obstacleCount;
     public GameObject obstaclePrefab;
     public GameObject obstaclePrefab2;
-    public List<GameObject> obstacleObjects2=new List<GameObject>();
+    public List<GameObject> ObstacleObjects2=new List<GameObject>();
     public List<GameObject> ObstacleObjects = new List<GameObject>();
     public float LastObstaclePositionZ;
     #endregion
