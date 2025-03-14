@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public class ObstacleController : MonoBehaviour
@@ -13,81 +15,62 @@ public class ObstacleController : MonoBehaviour
 
     private void Update()
     {
-        CheckPositionObstacle();
+       // CheckPositionObstacle();
     }
 
     private void SpawnObstacle()
     {
-        for (int i = 0; i < _gameSettings.obstacleCount; i++)
+        for (int obstacleZIndex = 0; obstacleZIndex < _gameSettings.obstacleCount; obstacleZIndex++)
         {
-            bool useSecondPrefab = Random.value > 0.5f;
-            GameObject chosenPrefab = useSecondPrefab
-                ? _gameSettings.obstaclePrefab2
-                : _gameSettings.obstaclePrefab;
 
-            GameObject spawnedObstacle = Instantiate(chosenPrefab);
-
-            if (useSecondPrefab)
+            List<int> allLaneIndices = new List<int>();
+            for (int i = 0; i < _gameSettings.laneCount; i++)
             {
-                _gameSettings.ObstacleObjects2.Add(spawnedObstacle);
+                allLaneIndices.Add(i);
             }
-            else
+            allLaneIndices.Shuffle();
+
+            int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1);
+            
+            float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
+            // Debug.Log(zRandomOffset);
+            Debug.Log(_gameSettings.lastObstaclePositionZ);
+            float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
+            for (int i = 0; i < obstacleSpawnAmount; i++)
             {
+                float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
+                GameObject spawnedObstacle = Instantiate(_gameSettings.obstaclePrefab, new Vector3(xPosition, 0, newZPosition), Quaternion.identity);
                 _gameSettings.ObstacleObjects.Add(spawnedObstacle);
+
+                // RePositionObstacle(spawnedObstacle);
+
             }
 
-            RePositionObstacle(spawnedObstacle,useSecondPrefab);
+           
+            _gameSettings.lastObstaclePositionZ = newZPosition;
         }
-    } 
+    }
 
     private void CheckPositionObstacle()
     {
         for (int index = 0; index < _gameSettings.ObstacleObjects.Count; index++)
         {
             GameObject obstacle = _gameSettings.ObstacleObjects[index];
-            if (obstacle.transform.position.z < _gameSettings.player.transform.position.z - 20f)
+            if (obstacle.transform.position.z < _gameSettings.player.transform.position.z - 10f)
             {
-                RePositionObstacle(obstacle,false);
-            }
-        }
-        for (int j = 0; j < _gameSettings.ObstacleObjects2.Count; j++)
-        {
-            GameObject obstacle2 = _gameSettings.ObstacleObjects2[j];
-            if (obstacle2.transform.position.z < _gameSettings.player.transform.position.z - 20f)
-            {
-                RePositionObstacle(obstacle2,true);
+                RePositionObstacle(obstacle);
             }
         }
     }
 
-    private void RePositionObstacle(GameObject obstacle, bool isSecondPrefab)
+    private void RePositionObstacle(GameObject obstacle)
     {
-        // 1) Hangi şeritler seçilebilir?
-        int selectedLaneIndex;
-        if (isSecondPrefab)
-        {
-            // Büyük engel ise, uç şeritlerden (0 ve laneCount-1) hariç tut:
-            // Örneğin, laneCount = 5 → şeritler: 0,1,2,3,4
-            // Yalnızca 1,2,3 arasından seçmek için:
-            selectedLaneIndex = Random.Range(1, _gameSettings.laneCount - 1);
-        }
-        else
-        {
-            // Küçük engel ise, tüm şeritlerden seç
-            selectedLaneIndex = Random.Range(0, _gameSettings.laneCount);
-        }
-
-        // 2) x konumunu hesapla
-        float xPosition = _gameSettings.firstLanePositionX + selectedLaneIndex * _gameSettings.distanceBetweenLanes;
-
-        // 3) z konumu (Random aralık)
-        float zRandomOffset = Random.Range(9f, 15f);
-        float newZPosition = _gameSettings.LastObstaclePositionZ + zRandomOffset;
-
-        // 4) Konumlandırma
-        obstacle.transform.position = new Vector3(xPosition, 0f, newZPosition);
-
-        // 5) Son engel konumunu güncelle (tüm engelleri aynı z sıralamasında takip ettiğinizi varsayarsak)
-        _gameSettings.LastObstaclePositionZ = obstacle.transform.position.z;
+   
+        float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
+        float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
+        //objectpooling
+        obstacle.transform.position = new Vector3(obstacle.transform.position.x, 0f,obstacle.transform.position.z+35f);
+       // _gameSettings.LastObstaclePositionZ = newZPosition;
+        Debug.Log(_gameSettings.lastObstaclePositionZ);
     }
 }

@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
 
     private bool _isGameStarted;
 
+    private bool _isJumping = false;  // Oyuncu þu anda zýplýyor mu?
+    private float _jumpTimer = 0f;    // Zýplama süresi boyunca geçen zaman
+    private float _groundY;           // Zýplama baþlamadan önce oyuncunun yer seviyesindeki y konumu
+
+
     private void OnEnable()
     {
         InputController.SwipeLeftEvent += OnPlayerPressedLeftButton;
@@ -40,7 +45,7 @@ public class PlayerController : MonoBehaviour
             _gameSettings.currentLaneIndex++;
         }
     }
-   
+
     private void OnGameOver(int score)
     {
         _isGameStarted = false;
@@ -52,38 +57,35 @@ public class PlayerController : MonoBehaviour
     }
     private void OnJump()
     {
-        if (!_gameSettings.isJumping)
+        if (!_isJumping)
             StartJump();
     }
     private void StartJump()
     {
-        _gameSettings.isJumping = true;
-        _gameSettings.jumpTimer = 0f;
-        _gameSettings.groundY = transform.position.y;
+        _isJumping = true;
+        _jumpTimer = 0f;
+        _groundY = transform.position.y;
     }
     private void UpdateJump()
     {
-        _gameSettings.jumpTimer += Time.deltaTime;
+        _jumpTimer += Time.deltaTime;
         // t, zýplamanýn ilerleme oranýný temsil eder: 0 (baþlangýç) ile 1 (bitiþ) arasýnda
-        float t = _gameSettings.jumpTimer / _gameSettings.jumpDuration;
+        float t = _jumpTimer / _gameSettings.jumpDuration;
         t = Mathf.Clamp01(t);
 
         // Parabolik zýplama eðrisi:
         // y_offset = 4 * jumpHeight * t * (1-t)
         // Bu formüle göre, t = 0 veya 1 olduðunda y_offset 0, t = 0.5'te y_offset maksimum (jumpHeight) deðerine ulaþýr
         float yOffset = 4 * _gameSettings.jumpHeight * t * (1 - t);
-        float newY = _gameSettings.groundY + yOffset;
+        float newY = _groundY + yOffset;
 
-        Vector3 pos = transform.position;
-        pos.y = newY;
-        transform.position = pos;
+        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
         // Zýplama süresi tamamlandýðýnda zýplamayý sonlandýr
-        if (_gameSettings.jumpTimer >= _gameSettings.jumpDuration)
+        if (_jumpTimer >= _gameSettings.jumpDuration)
         {
-            _gameSettings.isJumping = false;
-            pos.y = _gameSettings.groundY;
-            transform.position = pos;
+            _isJumping = false;
+            transform.position = new Vector3(transform.position.x, _groundY, transform.position.z);
         }
     }
 
@@ -115,7 +117,7 @@ public class PlayerController : MonoBehaviour
         MoveForward();
         MoveSideways();
 
-        if (_gameSettings.isJumping)
+        if (_isJumping)
         {
             UpdateJump();
         }

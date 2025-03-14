@@ -20,10 +20,10 @@ public class GameSettings : MonoBehaviour
     [Header("Obstacle Related")]
     public int obstacleCount;
     public GameObject obstaclePrefab;
-    public GameObject obstaclePrefab2;
-    public List<GameObject> ObstacleObjects2=new List<GameObject>();
     public List<GameObject> ObstacleObjects = new List<GameObject>();
-    public float LastObstaclePositionZ;
+    public float lastObstaclePositionZ;
+    public float zMaxDifferenceBetweenObstacles = 35f;
+    public float zMinDifferenceBetweenObstacles = 50f;
     #endregion
     [Space]
     #region Platforms
@@ -48,8 +48,6 @@ public class GameSettings : MonoBehaviour
     [Header("Jumping")]
     public float jumpDuration = 1f;  // Zýplamanýn toplam süresi (saniye cinsinden)
     public float jumpHeight = 3f;    // Maksimum zýplama yüksekliði
-    public bool isJumping = false;  // Oyuncu þu anda zýplýyor mu?
-    public float jumpTimer = 0f;    // Zýplama süresi boyunca geçen zaman
-    public float groundY;           // Zýplama baþlamadan önce oyuncunun yer seviyesindeki y konumu
+   
     #endregion
 }
