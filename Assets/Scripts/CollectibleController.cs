@@ -1,72 +1,66 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 public class CollectibleController : MonoBehaviour
 {
-    private GameSettings _gameSettings;
 
+    private GameSettings _gameSettings;
     private int _lastSelectedLaneIndex;
+    public float _lastCollectiblePositionZ;
+
     private void Start()
     {
         _gameSettings = FindObjectOfType<GameSettings>();
-        SpawnCollectible();
+        _lastCollectiblePositionZ = _gameSettings.player.transform.position.z + _gameSettings.distanceMovingToPlayer;
+        SpawnCollectibles();
     }
 
     private void Update()
     {
-        MoveCollectibles();
+        if(_lastCollectiblePositionZ<_gameSettings.player.transform.position.z+150f)
+        {
+            GameObject spawnedCollectible = PoolManager.Instance.GetFromPool("Collectible");
+        }
     }
-    //Collectible ý spawnla ve olmasý gereken yere taþý
-    private void SpawnCollectible()
+
+    // Havuzdan collectible çekip sahneye yerleþtirir.
+    public void SpawnCollectibles()
     {
         int laneCountWithConnections = _gameSettings.laneCount + _gameSettings.laneCount - 1;
         _lastSelectedLaneIndex = Random.Range(0, laneCountWithConnections);
 
-        for (int i = 0; i < _gameSettings.collectibleCount; i++)
+        //  for (int i = 0; i < _gameSettings.collectibleCount; i++)
+        while (_lastCollectiblePositionZ < _gameSettings.player.transform.position.z + 150f)
         {
-            GameObject spawnedCollectibleParent = Instantiate(_gameSettings.collectiblePrefab);
-            _gameSettings.CollectibleObjects.Add(spawnedCollectibleParent);
-            SetNewPositionToCollectible(spawnedCollectibleParent);
+            GameObject spawnedCollectible = PoolManager.Instance.GetFromPool("Collectible");
+            SetNewPositionToCollectible(spawnedCollectible);
         }
     }
-    //Collectible array kontro et eðer geride kalan collectible varsa onu ileriye doðru taþý
-    private void MoveCollectibles()
-    {
-        for (int index = 0; index < _gameSettings.CollectibleObjects.Count; index++)
-        {
-            GameObject collectible = _gameSettings.CollectibleObjects[index];
-       
-            if (collectible.transform.position.z < _gameSettings.player.transform.position.z - _gameSettings.distanceMovingToPlayer)
-            {
-                SetNewPositionToCollectible(collectible);
-            }
-        }
-    }
-    // içeri parametre olarak gönderilen collectible ý uygun yere taþý
+
     private void SetNewPositionToCollectible(GameObject collectible)
     {
         int laneCountWithConnections = _gameSettings.laneCount + _gameSettings.laneCount - 1;
         bool isGoingRight = Random.value > 0.5f;
 
-        if (_lastSelectedLaneIndex == laneCountWithConnections-1 && isGoingRight == true)
+        if (_lastSelectedLaneIndex == laneCountWithConnections - 1 && isGoingRight)
         {
             isGoingRight = false;
         }
-        if (_lastSelectedLaneIndex == 0 && isGoingRight == false)
+        if (_lastSelectedLaneIndex == 0 && !isGoingRight)
         {
             isGoingRight = true;
         }
         int selectedLaneIndex = isGoingRight
             ? _lastSelectedLaneIndex + 1
             : _lastSelectedLaneIndex - 1;
-
         _lastSelectedLaneIndex = selectedLaneIndex;
 
         float xPosition = _gameSettings.firstLanePositionX + selectedLaneIndex * (_gameSettings.distanceBetweenLanes / 2f);
-
         float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenCollectibles, _gameSettings.zMaxDifferenceBetweenCollectibles);
-        float newZposition=_gameSettings.lastCollectiblePositionZ + zRandomOffset;
+        float newZposition = _lastCollectiblePositionZ + zRandomOffset;
 
         collectible.transform.position = new Vector3(xPosition, 0.5f, newZposition);
-        _gameSettings.lastCollectiblePositionZ = collectible.transform.position.z;
+        _lastCollectiblePositionZ = collectible.transform.position.z;
     }
 }

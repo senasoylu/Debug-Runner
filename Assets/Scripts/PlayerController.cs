@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     private void OnJump()
     {
         if (!_isJumping)
-            StartJump();
+            StartJump(); 
     }
     private void StartJump()
     {
@@ -152,11 +152,16 @@ public class PlayerController : MonoBehaviour
         {
             OnObstacleHitEvent?.Invoke();
             TriggerFall();
+            ObstacleController.Instance.ReturnObstacle( other.gameObject);
         }
+
         else if (other.CompareTag("Collectible"))
         {
             OnCollectibleHitEvent?.Invoke();
-            other.gameObject.SetActive(false);
+            PoolManager.Instance.ReturnToPool("Collectible",other.gameObject);
+            // CollectibleController üzerinden havuza geri gönder
+         
+           
         }
     }
 

@@ -37,8 +37,7 @@ public class GameSettings : MonoBehaviour
     [Header("Collectibles Related")]
     public GameObject collectiblePrefab;
     public int collectibleCount = 20;
-    public List<GameObject> CollectibleObjects = new List<GameObject>();
-    public float lastCollectiblePositionZ;
+  
     public float zMaxDifferenceBetweenCollectibles = 2f;
     public float zMinDifferenceBetweenCollectibles = 5f;
     public float distanceMovingToPlayer = 20f;

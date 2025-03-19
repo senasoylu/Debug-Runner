@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ObstacleController : MonoBehaviour
 {
     private GameSettings _gameSettings;
+    public static ObstacleController Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this; // Singleton ataması
+    }
 
     private void Start()
     {
@@ -15,14 +20,13 @@ public class ObstacleController : MonoBehaviour
 
     private void Update()
     {
-       // CheckPositionObstacle();
+        CheckPositionObstacle();
     }
 
     private void SpawnObstacle()
     {
         for (int obstacleZIndex = 0; obstacleZIndex < _gameSettings.obstacleCount; obstacleZIndex++)
         {
-
             List<int> allLaneIndices = new List<int>();
             for (int i = 0; i < _gameSettings.laneCount; i++)
             {
@@ -31,22 +35,20 @@ public class ObstacleController : MonoBehaviour
             allLaneIndices.Shuffle();
 
             int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1);
-            
+
             float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
-            // Debug.Log(zRandomOffset);
-            Debug.Log(_gameSettings.lastObstaclePositionZ);
             float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
+
             for (int i = 0; i < obstacleSpawnAmount; i++)
             {
                 float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
-                GameObject spawnedObstacle = Instantiate(_gameSettings.obstaclePrefab, new Vector3(xPosition, 0, newZPosition), Quaternion.identity);
+
+                // DİKKAT: PoolManager'da "Obstacle" tag'i olduğundan emin olun (büyük harf "O").
+                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool("Obstacle");
+
                 _gameSettings.ObstacleObjects.Add(spawnedObstacle);
-
-                // RePositionObstacle(spawnedObstacle);
-
+                RePositionObstacle(spawnedObstacle);
             }
-
-           
             _gameSettings.lastObstaclePositionZ = newZPosition;
         }
     }
@@ -65,12 +67,27 @@ public class ObstacleController : MonoBehaviour
 
     private void RePositionObstacle(GameObject obstacle)
     {
-   
         float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
         float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
-        //objectpooling
-        obstacle.transform.position = new Vector3(obstacle.transform.position.x, 0f,obstacle.transform.position.z+35f);
-       // _gameSettings.LastObstaclePositionZ = newZPosition;
-        Debug.Log(_gameSettings.lastObstaclePositionZ);
+
+        // Engelin konumunu basitçe z ekseninde 35 birim ileriye taşıyorsunuz (veya newZPosition'a ayarlayabilirsiniz).
+        obstacle.transform.position = new Vector3(obstacle.transform.position.x, 0f, obstacle.transform.position.z + 35f);
+        // _gameSettings.lastObstaclePositionZ = newZPosition; // İsteğe bağlı
     }
+
+    public void ReturnObstacle(GameObject obstacle)
+    {
+        // OBSTACLE listesi üzerinden çıkarma (CollectibleObjects değil!)
+        if (_gameSettings.ObstacleObjects.Contains(obstacle))
+        {
+            _gameSettings.ObstacleObjects.Remove(obstacle);
+        }
+
+        // Tag da "Obstacle" (büyük O) ile uyuşmalı
+        PoolManager.Instance.ReturnToPool("Obstacle", obstacle);
+
+       // StartCoroutine(ReturnAfterTime());
+    }
+
+   
 }
