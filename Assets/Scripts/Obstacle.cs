@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Collectible : MonoBehaviour
+public class Obstacle : MonoBehaviour
 {
     private GameSettings _gameSettings;
     void Start()
@@ -14,7 +14,7 @@ public class Collectible : MonoBehaviour
     {
         if (transform.position.z < _gameSettings.player.transform.position.z - _gameSettings.distanceMovingToPlayer)
         {
-            PoolManager.Instance.ReturnToPool("Collectible", gameObject); //  collectible objelerini havuza döndür
+            PoolManager.Instance.ReturnToPool("Obstacle", gameObject); //   objelerini havuza döndür
         }
     }
 }

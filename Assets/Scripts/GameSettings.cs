@@ -20,8 +20,6 @@ public class GameSettings : MonoBehaviour
     [Header("Obstacle Related")]
     public int obstacleCount;
     public GameObject obstaclePrefab;
-    public List<GameObject> ObstacleObjects = new List<GameObject>();
-    public float lastObstaclePositionZ;
     public float zMaxDifferenceBetweenObstacles = 35f;
     public float zMinDifferenceBetweenObstacles = 50f;
     #endregion
@@ -37,7 +35,6 @@ public class GameSettings : MonoBehaviour
     [Header("Collectibles Related")]
     public GameObject collectiblePrefab;
     public int collectibleCount = 20;
-  
     public float zMaxDifferenceBetweenCollectibles = 2f;
     public float zMinDifferenceBetweenCollectibles = 5f;
     public float distanceMovingToPlayer = 20f;

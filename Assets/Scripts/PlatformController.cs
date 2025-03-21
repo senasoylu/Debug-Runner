@@ -20,6 +20,7 @@ public class PlatformController : MonoBehaviour
             _gameSettings.platformParentObjects.Add(spawnedPlatformParent);
         }
     }
+
     private void Update()
     {
         MovePlatformsIfNeeded();

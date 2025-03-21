@@ -152,16 +152,13 @@ public class PlayerController : MonoBehaviour
         {
             OnObstacleHitEvent?.Invoke();
             TriggerFall();
-            ObstacleController.Instance.ReturnObstacle( other.gameObject);
+            PoolManager.Instance.ReturnToPool("Obstacle", other.gameObject);
         }
 
         else if (other.CompareTag("Collectible"))
         {
             OnCollectibleHitEvent?.Invoke();
             PoolManager.Instance.ReturnToPool("Collectible",other.gameObject);
-            // CollectibleController üzerinden havuza geri gönder
-         
-           
         }
     }
 

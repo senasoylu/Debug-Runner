@@ -5,89 +5,77 @@ using UnityEngine;
 public class ObstacleController : MonoBehaviour
 {
     private GameSettings _gameSettings;
-    public static ObstacleController Instance { get; private set; }
-
-    private void Awake()
-    {
-        Instance = this; // Singleton ataması
-    }
-
+    public float lastObstaclePositionZ;
     private void Start()
     {
         _gameSettings = FindObjectOfType<GameSettings>();
+      lastObstaclePositionZ = _gameSettings.player.transform.position.z + _gameSettings.distanceMovingToPlayer;
         SpawnObstacle();
     }
 
     private void Update()
     {
-        CheckPositionObstacle();
+        if (lastObstaclePositionZ< _gameSettings.player.transform.position.z + 150f)
+        {
+            SpawnObstacle();
+        }
     }
 
     private void SpawnObstacle()
     {
-        for (int obstacleZIndex = 0; obstacleZIndex < _gameSettings.obstacleCount; obstacleZIndex++)
+        while (lastObstaclePositionZ < _gameSettings.player.transform.position.z + 150f) //oyuncunun 150 metre ilerisine kadar obstacle olsun 
         {
-            List<int> allLaneIndices = new List<int>();
-            for (int i = 0; i < _gameSettings.laneCount; i++)
+            List<int> allLaneIndices = new List<int>(); //lane index list
+            for (int i = 0; i < _gameSettings.laneCount; i++) 
             {
-                allLaneIndices.Add(i);
+                allLaneIndices.Add(i); //lane listesine indeksleri ekle
             }
-            allLaneIndices.Shuffle();
+            allLaneIndices.Shuffle(); //karıştır(fatih abinin gönderdiği yerden Shuffle çalıştı
 
-            int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1);
+            int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1); //engel sayısı değişken olsun 1 ve 5 arası olsun +1 dedik hepsi dahil olsun diye
+            float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);//obs arası mesafe
+            float newZPosition = lastObstaclePositionZ + zRandomOffset; 
 
-            float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
-            float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
-
-            for (int i = 0; i < obstacleSpawnAmount; i++)
+            for (int i = 0; i < obstacleSpawnAmount; i++)// lanelerde
             {
                 float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
-
-                // DİKKAT: PoolManager'da "Obstacle" tag'i olduğundan emin olun (büyük harf "O").
                 GameObject spawnedObstacle = PoolManager.Instance.GetFromPool("Obstacle");
-
-                _gameSettings.ObstacleObjects.Add(spawnedObstacle);
-                RePositionObstacle(spawnedObstacle);
+                spawnedObstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
             }
-            _gameSettings.lastObstaclePositionZ = newZPosition;
+            lastObstaclePositionZ = newZPosition;
         }
     }
 
-    private void CheckPositionObstacle()
-    {
-        for (int index = 0; index < _gameSettings.ObstacleObjects.Count; index++)
-        {
-            GameObject obstacle = _gameSettings.ObstacleObjects[index];
-            if (obstacle.transform.position.z < _gameSettings.player.transform.position.z - 10f)
-            {
-                RePositionObstacle(obstacle);
-            }
-        }
-    }
+    //private void SpawnObstacle()
+    //{
+    //    for (int obstacleZIndex = 0; obstacleZIndex < _gameSettings.obstacleCount; obstacleZIndex++)
+    //    {
+    //        List<int> allLaneIndices = new List<int>();
+    //        for (int i = 0; i < _gameSettings.laneCount; i++)
+    //        {
+    //            allLaneIndices.Add(i);
+    //        }
+    //        allLaneIndices.Shuffle();
 
-    private void RePositionObstacle(GameObject obstacle)
-    {
-        float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
-        float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
+    //        int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1);
 
-        // Engelin konumunu basitçe z ekseninde 35 birim ileriye taşıyorsunuz (veya newZPosition'a ayarlayabilirsiniz).
-        obstacle.transform.position = new Vector3(obstacle.transform.position.x, 0f, obstacle.transform.position.z + 35f);
-        // _gameSettings.lastObstaclePositionZ = newZPosition; // İsteğe bağlı
-    }
+    //        float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
+    //        float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
 
-    public void ReturnObstacle(GameObject obstacle)
-    {
-        // OBSTACLE listesi üzerinden çıkarma (CollectibleObjects değil!)
-        if (_gameSettings.ObstacleObjects.Contains(obstacle))
-        {
-            _gameSettings.ObstacleObjects.Remove(obstacle);
-        }
+    //        while (_gameSettings.lastObstaclePositionZ < _gameSettings.player.transform.position.z + 150f)
+    //        {
+    //            for (int i = 0; i < obstacleSpawnAmount; i++)
+    //            {
+    //                float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
+    //                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool("Obstacle");
+    //                spawnedObstacle.transform.position=new Vector3(xPosition, 0,newZPosition);
+    //            }
+    //            // Her iterasyonda yeni bir z offset hesaplanarak yeniZPosition güncelleniyor.
+    //            zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
+    //            newZPosition += zRandomOffset;
+    //            _gameSettings.lastObstaclePositionZ = newZPosition;
+    //        }
+    //    }
+    //}
 
-        // Tag da "Obstacle" (büyük O) ile uyuşmalı
-        PoolManager.Instance.ReturnToPool("Obstacle", obstacle);
-
-       // StartCoroutine(ReturnAfterTime());
-    }
-
-   
 }

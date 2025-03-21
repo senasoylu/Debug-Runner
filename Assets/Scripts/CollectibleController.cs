@@ -21,6 +21,8 @@ public class CollectibleController : MonoBehaviour
         if(_lastCollectiblePositionZ<_gameSettings.player.transform.position.z+150f)
         {
             GameObject spawnedCollectible = PoolManager.Instance.GetFromPool("Collectible");
+            SetNewPositionToCollectible(spawnedCollectible);
+
         }
     }
 
@@ -30,7 +32,6 @@ public class CollectibleController : MonoBehaviour
         int laneCountWithConnections = _gameSettings.laneCount + _gameSettings.laneCount - 1;
         _lastSelectedLaneIndex = Random.Range(0, laneCountWithConnections);
 
-        //  for (int i = 0; i < _gameSettings.collectibleCount; i++)
         while (_lastCollectiblePositionZ < _gameSettings.player.transform.position.z + 150f)
         {
             GameObject spawnedCollectible = PoolManager.Instance.GetFromPool("Collectible");
