@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     private float _jumpTimer = 0f;    // Zýplama süresi boyunca geçen zaman
     private float _groundY;           // Zýplama baþlamadan önce oyuncunun yer seviyesindeki y konumu
 
+    private CubeStacker _cubeStacker;
+
 
     private void OnEnable()
     {
@@ -105,6 +107,7 @@ public class PlayerController : MonoBehaviour
     {
         _gameSettings = FindObjectOfType<GameSettings>();
         animator = GetComponent<Animator>();
+        _cubeStacker=FindObjectOfType<CubeStacker>();
     }
 
     private void Update()
@@ -158,7 +161,16 @@ public class PlayerController : MonoBehaviour
         else if (other.CompareTag("Collectible"))
         {
             OnCollectibleHitEvent?.Invoke();
-            PoolManager.Instance.ReturnToPool("Collectible",other.gameObject);
+            // Artýk collectible'ý havuza geri göndermek yerine stacking sistemine ekliyoruz.
+            if (_cubeStacker != null)
+            {
+                _cubeStacker.CollectCube(other.gameObject);
+            }
+            else
+            {
+                // Eðer stacking script'i eriþilemez ise yedek olarak pool'a gönderelim.
+                PoolManager.Instance.ReturnToPool("Collectible", other.gameObject);
+            }
         }
     }
 

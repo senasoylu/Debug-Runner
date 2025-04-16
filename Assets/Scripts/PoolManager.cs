@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static PoolManager;
-using UnityEngine.Pool;
 
 public class PoolManager : MonoBehaviour
 {
@@ -30,7 +27,7 @@ public class PoolManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this; // Singleton atamasý
-           
+
         }
         else
         {
@@ -41,12 +38,7 @@ public class PoolManager : MonoBehaviour
 
     }
 
-    void Start()
-    {
-        
-    }
-
-    private void Initialize() 
+    private void Initialize()
     {
         poolDictionary = new Dictionary<string, Pool>(); //baþýnda new varsa bu da maaliyeti etkiler
 
@@ -57,17 +49,17 @@ public class PoolManager : MonoBehaviour
             for (int i = 0; i < pool.size; i++)
             {
                 GameObject obj = Instantiate(pool.prefab);
-             
+
                 obj.SetActive(false);
                 pool._gameObjectQueue.Enqueue(obj);
                 obj.transform.SetParent(_poolContainer);
             }
-           
+
             poolDictionary.Add(pool.tag, pool);
         }
     }
 
-    public GameObject GetFromPool(string tag) 
+    public GameObject GetFromPool(string tag)
     {
         if (!poolDictionary.ContainsKey(tag)) //Pool dict' de bu tag i arýyor böyle bir key var mý diyor
         {
@@ -95,13 +87,20 @@ public class PoolManager : MonoBehaviour
                 obj.SetActive(false); //kapat
                 pool._gameObjectQueue.Enqueue(obj); //listeye al
                 obj.transform.SetParent(_poolContainer);
+               _poolContainer.position = Vector3.zero;
             }
         }
     }
 
+    /// HACKED BY_PARAZIT !!! 
+
+
     public void ReturnToPool(string tag, GameObject obj) //"x"" tagli objem için
     {
         obj.SetActive(false); //false yap
+        obj.transform.position = Vector3.zero;
+        obj.transform.rotation = Quaternion.identity;
+       
         poolDictionary[tag]._gameObjectQueue.Enqueue(obj); //geri listeye al
     }
 }

@@ -18,8 +18,6 @@ public class GameSettings : MonoBehaviour
     [Space]
     #region Obstacles
     [Header("Obstacle Related")]
-    public int obstacleCount;
-    public GameObject obstaclePrefab;
     public float zMaxDifferenceBetweenObstacles = 35f;
     public float zMinDifferenceBetweenObstacles = 50f;
     #endregion
@@ -33,8 +31,6 @@ public class GameSettings : MonoBehaviour
     [Space]
     #region Collectibles
     [Header("Collectibles Related")]
-    public GameObject collectiblePrefab;
-    public int collectibleCount = 20;
     public float zMaxDifferenceBetweenCollectibles = 2f;
     public float zMinDifferenceBetweenCollectibles = 5f;
     public float distanceMovingToPlayer = 20f;
@@ -44,6 +40,24 @@ public class GameSettings : MonoBehaviour
     [Header("Jumping")]
     public float jumpDuration = 1f;  // Zýplamanýn toplam süresi (saniye cinsinden)
     public float jumpHeight = 3f;    // Maksimum zýplama yüksekliði
-   
     #endregion
+    [Space]
+    #region
+    [Header("Enviroment")]
+    public float minOnTheRightSide = 4.0f;
+    public float maxOnTheRightSide = 25.0f;
+    public float minOnTheLeftSide = -4.0f;
+    public float maxOnTheLeftSide = -30.0f;
+    public float minHeight = -15.0f;
+    public float maxHeight = 12.0f;
+    public float minDifferenceBetweenBuilding = 20.0f;
+    public float maxDifferenceBetweenBuilding = 50.0f;
+    #endregion
+
+    #region
+    public const string OBSTACLE_TAG_STRING = "Obstacle";
+    public const string COLLECTÝBLE_TAG_STRING = "Collectible";
+    public const string BUILDING_TAG_STRING = "Building";
+    #endregion
+
 }

@@ -20,7 +20,7 @@ public class CollectibleController : MonoBehaviour
     {
         if(_lastCollectiblePositionZ<_gameSettings.player.transform.position.z+150f)
         {
-            GameObject spawnedCollectible = PoolManager.Instance.GetFromPool("Collectible");
+            GameObject spawnedCollectible = PoolManager.Instance.GetFromPool(GameSettings.COLLECTÝBLE_TAG_STRING);
             SetNewPositionToCollectible(spawnedCollectible);
 
         }
@@ -34,7 +34,7 @@ public class CollectibleController : MonoBehaviour
 
         while (_lastCollectiblePositionZ < _gameSettings.player.transform.position.z + 150f)
         {
-            GameObject spawnedCollectible = PoolManager.Instance.GetFromPool("Collectible");
+            GameObject spawnedCollectible = PoolManager.Instance.GetFromPool(GameSettings.COLLECTÝBLE_TAG_STRING);
             SetNewPositionToCollectible(spawnedCollectible);
         }
     }

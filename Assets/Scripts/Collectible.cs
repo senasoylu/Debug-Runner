@@ -14,7 +14,7 @@ public class Collectible : MonoBehaviour
     {
         if (transform.position.z < _gameSettings.player.transform.position.z - _gameSettings.distanceMovingToPlayer)
         {
-            PoolManager.Instance.ReturnToPool("Collectible", gameObject); //  collectible objelerini havuza döndür
+            PoolManager.Instance.ReturnToPool(GameSettings.COLLECTÝBLE_TAG_STRING, gameObject); //  collectible objelerini havuza döndür
         }
     }
 }

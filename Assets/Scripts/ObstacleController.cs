@@ -39,43 +39,10 @@ public class ObstacleController : MonoBehaviour
             for (int i = 0; i < obstacleSpawnAmount; i++)// lanelerde
             {
                 float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
-                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool("Obstacle");
+                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool(GameSettings.OBSTACLE_TAG_STRING);
                 spawnedObstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
             }
             lastObstaclePositionZ = newZPosition;
         }
     }
-
-    //private void SpawnObstacle()
-    //{
-    //    for (int obstacleZIndex = 0; obstacleZIndex < _gameSettings.obstacleCount; obstacleZIndex++)
-    //    {
-    //        List<int> allLaneIndices = new List<int>();
-    //        for (int i = 0; i < _gameSettings.laneCount; i++)
-    //        {
-    //            allLaneIndices.Add(i);
-    //        }
-    //        allLaneIndices.Shuffle();
-
-    //        int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1);
-
-    //        float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
-    //        float newZPosition = _gameSettings.lastObstaclePositionZ + zRandomOffset;
-
-    //        while (_gameSettings.lastObstaclePositionZ < _gameSettings.player.transform.position.z + 150f)
-    //        {
-    //            for (int i = 0; i < obstacleSpawnAmount; i++)
-    //            {
-    //                float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
-    //                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool("Obstacle");
-    //                spawnedObstacle.transform.position=new Vector3(xPosition, 0,newZPosition);
-    //            }
-    //            // Her iterasyonda yeni bir z offset hesaplanarak yeniZPosition güncelleniyor.
-    //            zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);
-    //            newZPosition += zRandomOffset;
-    //            _gameSettings.lastObstaclePositionZ = newZPosition;
-    //        }
-    //    }
-    //}
-
 }

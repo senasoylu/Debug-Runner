@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &30970121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89d5b7b5db3490144973b242cd9eb5fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lastObstaclePositionZ: 0
 --- !u!4 &30970122
 Transform:
   m_ObjectHideFlags: 0
@@ -787,6 +788,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1696957041}
+  _forwandSpeed: 20
+  _smoothTime: 0.15
 --- !u!1 &970220487
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,11 +999,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pools:
   - tag: Collectible
-    prefab: {fileID: 3006195385904641258, guid: 3df6abca61997e74b8fa7631a595ab92, type: 3}
+    prefab: {fileID: 8930169843528577901, guid: d75b122c84f075248bd5a183df346f97, type: 3}
     size: 20
     extendSize: 5
   - tag: Obstacle
     prefab: {fileID: 451077674606121524, guid: 888eea2636cfe6a4e9d5f579fbbc76f1, type: 3}
+    size: 20
+    extendSize: 5
+  - tag: Building
+    prefab: {fileID: 8606188645255659024, guid: 5ecc028b1ec1bb942b3b0cdc4bf28fa4, type: 3}
     size: 20
     extendSize: 5
 --- !u!4 &1089382177
@@ -1013,6 +1020,53 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.78, y: 0, z: 95}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1255988877
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1255988879}
+  - component: {fileID: 1255988878}
+  m_Layer: 0
+  m_Name: BuildingController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1255988878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255988877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d356dabcb1e7454b8f237d14adc1331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1696957041}
+  lastBuildingPositionZLeft: 0
+  lastBuildingPositionZRight: 0
+--- !u!4 &1255988879
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255988877}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1131,6 +1185,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1412325638
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1412325639}
+  - component: {fileID: 1412325640}
+  m_Layer: 0
+  m_Name: CubeStack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1412325639
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412325638}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1696957046}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1412325640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412325638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f2c1e59636e2734981e60122d90db97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cubeStackParent: {fileID: 1412325639}
+  swayAmplitude: 0.1
+  swayFrequency: 2
+  smoothSpeed: 5
+  cubeHeight: 0.5
+  firstCubeYOffset: 1
+  firstCubeZOffset: 0.5
 --- !u!1 &1506415957
 GameObject:
   m_ObjectHideFlags: 0
@@ -1412,7 +1517,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1412325639}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
       insertIndex: -1
@@ -1495,6 +1603,11 @@ Rigidbody:
 --- !u!95 &1696957045 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
+  m_PrefabInstance: {fileID: 1696957040}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1696957046 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c2cc7f1ad1610c14190e21976407afe3, type: 3}
   m_PrefabInstance: {fileID: 1696957040}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1762016816
@@ -1937,22 +2050,24 @@ MonoBehaviour:
   platformLength: 100
   playerForwardSpeed: 10
   playerSidewaySpeed: 20
-  obstacleCount: 0
-  obstaclePrefab: {fileID: 451077674606121524, guid: 888eea2636cfe6a4e9d5f579fbbc76f1, type: 3}
-  ObstacleObjects: []
-  lastObstaclePositionZ: 0
   zMaxDifferenceBetweenObstacles: 9
   zMinDifferenceBetweenObstacles: 15
   laneSpawnPlatformPrefab: {fileID: 1210189402689409947, guid: 7c387562f1aa63c4aa9053ed6bf4c32f, type: 3}
   platformParentPrefab: {fileID: 2008644894683680414, guid: 135fa405e4a177141bfd8715d5c8a99b, type: 3}
   platformParentObjects: []
-  collectiblePrefab: {fileID: 3006195385904641258, guid: 3df6abca61997e74b8fa7631a595ab92, type: 3}
-  collectibleCount: 20
   zMaxDifferenceBetweenCollectibles: 2
   zMinDifferenceBetweenCollectibles: 5
   distanceMovingToPlayer: 20
   jumpDuration: 1
   jumpHeight: 2
+  minOnTheRightSide: 8
+  maxOnTheRightSide: 25
+  minOnTheLeftSide: -8
+  maxOnTheLeftSide: -30
+  minHeight: -15
+  maxHeight: 12
+  minDifferenceBetweenBuilding: 20
+  maxDifferenceBetweenBuilding: 50
 --- !u!4 &2030403661
 Transform:
   m_ObjectHideFlags: 0
@@ -1985,3 +2100,4 @@ SceneRoots:
   - {fileID: 1506415959}
   - {fileID: 1696957040}
   - {fileID: 1089382177}
+  - {fileID: 1255988879}
