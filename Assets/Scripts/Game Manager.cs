@@ -13,29 +13,45 @@ public class GameManager : MonoBehaviour
     public static OnGameOverDelegate OnGameOverEvent;
 
     private int _score = 0;
-    private int _addScore = 10;
+    private int _addScore = 10;   // her küpte +10, her engelde –10
 
     private void OnEnable()
     {
         PlayerController.OnObstacleHitEvent += OnObstacleHit;
         PlayerController.OnCollectibleHitEvent += OnCollectibleHit;
-
         UIManager.OnRestartButtonClickedEvent += OnRestartButtonClicked;
     }
 
     private void Start()
     {
-        StartScreen();
+        // Oyuna baþlarken skor 0 olsun, UI’a bildir:
+        OnScoreUpdatedEvent?.Invoke(_score);
+        OnGameStartedEvent?.Invoke();
     }
 
-    private void StartScreen()
+    private void OnCollectibleHit()
     {
-        OnGameStartedEvent?.Invoke();
+        AddScore(+_addScore);
     }
 
     private void OnObstacleHit()
     {
-        OnGameOverEvent?.Invoke(_score);
+        // Engel çarptýðýnda –10 puan
+        if (_score >= _addScore)
+        {
+            AddScore(-_addScore);
+        }
+        else
+        {
+            // Skor 0’ýn altýna inerse game over
+            OnGameOverEvent?.Invoke(_score);
+        }
+    }
+
+    public void AddScore(int delta)
+    {
+        _score += delta;
+        OnScoreUpdatedEvent?.Invoke(_score);
     }
 
     private void OnRestartButtonClicked()
@@ -43,28 +59,15 @@ public class GameManager : MonoBehaviour
         RestartGame();
     }
 
-    private void OnCollectibleHit()
-    {
-       AddScore(_addScore);
-    }
-
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void AddScore(int points)
-    {
-        _score += points;
-
-        OnScoreUpdatedEvent?.Invoke(_score);
     }
 
     private void OnDisable()
     {
         PlayerController.OnObstacleHitEvent -= OnObstacleHit;
         PlayerController.OnCollectibleHitEvent -= OnCollectibleHit;
-
         UIManager.OnRestartButtonClickedEvent -= OnRestartButtonClicked;
     }
 }

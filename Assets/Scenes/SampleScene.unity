@@ -788,7 +788,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1696957041}
-  _forwandSpeed: 20
   _smoothTime: 0.15
 --- !u!1 &970220487
 GameObject:
@@ -1194,7 +1193,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1412325639}
-  - component: {fileID: 1412325640}
   m_Layer: 0
   m_Name: CubeStack
   m_TagString: Untagged
@@ -1217,25 +1215,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1696957046}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1412325640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412325638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f2c1e59636e2734981e60122d90db97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cubeStackParent: {fileID: 1412325639}
-  swayAmplitude: 0.1
-  swayFrequency: 2
-  smoothSpeed: 5
-  cubeHeight: 0.5
-  firstCubeYOffset: 1
-  firstCubeZOffset: 0.5
 --- !u!1 &1506415957
 GameObject:
   m_ObjectHideFlags: 0
