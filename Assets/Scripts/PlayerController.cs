@@ -1,30 +1,40 @@
-﻿using Unity.VisualScripting;
+﻿// PlayerController.cs
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
+
     public delegate void OnObstacleHitDelegate();
     public static OnObstacleHitDelegate OnObstacleHitEvent;
 
     public delegate void OnCollectibleHitDelegate();
     public static OnCollectibleHitDelegate OnCollectibleHitEvent;
 
-    private GameSettings _gameSettings;
+    [SerializeField] private Transform cubeStackParent;
 
+    private GameSettings _gameSettings;
     public Animator animator;
 
     private bool _isGameStarted;
+    private bool _isJumping;
+    private float _jumpTimer;
+    private float _groundY;
 
-    private bool _isJumping = false;  // Oyuncu şu anda zıplıyor mu?
-    private float _jumpTimer = 0f;    // Zıplama süresi boyunca geçen zaman
-    private float _groundY;           // Zıplama başlamadan önce oyuncunun yer seviyesindeki y konumu
-
-    // Buraya ekliyoruz: en son yığılan küpü tutacak head pointer
+    // Head pointer: en son yığılan küp
     private CubeController _lastStackedCube;
-    [SerializeField] private Transform cubeStackParent;
+    [SerializeField]
+    private List<CubeController> _collectedCubes = new List<CubeController>();
 
     const float yStep = 0.5f;
-    const float zOffset = 0.5f;
+    const float zOffset = 0.6f;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void OnEnable()
     {
@@ -54,14 +64,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!_isGameStarted)
-            return;
-
+        if (!_isGameStarted) return;
         MoveForward();
         MoveSideways();
-
-        if (_isJumping)
-            UpdateJump();
+        if (_isJumping) UpdateJump();
     }
 
     private void OnPlayerPressedLeftButton()
@@ -76,20 +82,12 @@ public class PlayerController : MonoBehaviour
             _gameSettings.currentLaneIndex++;
     }
 
-    private void OnGameOver(int score)
-    {
-        _isGameStarted = false;
-    }
-
-    private void OnGameStarted()
-    {
-        _isGameStarted = true;
-    }
+    private void OnGameOver(int score) => _isGameStarted = false;
+    private void OnGameStarted() => _isGameStarted = true;
 
     private void OnJump()
     {
-        if (!_isJumping)
-            StartJump();
+        if (!_isJumping) StartJump();
     }
 
     private void StartJump()
@@ -102,13 +100,10 @@ public class PlayerController : MonoBehaviour
     private void UpdateJump()
     {
         _jumpTimer += Time.deltaTime;
-        // t, zıplamanın ilerleme oranı: 0 ile 1 arasında
         float t = Mathf.Clamp01(_jumpTimer / _gameSettings.jumpDuration);
-        // Parabolik zıplama
         float yOffset = 4 * _gameSettings.jumpHeight * t * (1 - t);
         float newY = _groundY + yOffset;
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-
         if (_jumpTimer >= _gameSettings.jumpDuration)
         {
             _isJumping = false;
@@ -118,15 +113,13 @@ public class PlayerController : MonoBehaviour
 
     private void MoveSideways()
     {
-        Vector3 desiredPosition = new Vector3(
-            _gameSettings.firstLanePositionX + _gameSettings.currentLaneIndex * _gameSettings.distanceBetweenLanes,
-            transform.position.y,
-            transform.position.z
-        );
-        Vector3 direction = (desiredPosition - transform.position).normalized;
-        float frameSpeed = _gameSettings.playerSidewaySpeed * Time.deltaTime;
-        float dist = Vector3.Distance(transform.position, desiredPosition);
-        transform.position += direction * Mathf.Min(frameSpeed, dist);
+        float targetX = _gameSettings.firstLanePositionX
+                      + _gameSettings.currentLaneIndex * _gameSettings.distanceBetweenLanes;
+        Vector3 desired = new Vector3(targetX, transform.position.y, transform.position.z);
+        Vector3 dir = (desired - transform.position).normalized;
+        float speed = _gameSettings.playerSidewaySpeed * Time.deltaTime;
+        float dist = Vector3.Distance(transform.position, desired);
+        transform.position += dir * Mathf.Min(speed, dist);
     }
 
     private void MoveForward()
@@ -138,47 +131,42 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            // Engel ile çarpıldığında önce score –10, sonra küp düşürme işlemi:
             OnObstacleHitEvent?.Invoke();
             DropLastCube();
             PoolManager.Instance.ReturnToPool("Obstacle", other.gameObject);
         }
         else if (other.CompareTag("Collectible"))
         {
-           
-            OnCollectibleHitEvent?.Invoke();
-
-            // 1) CubeController’ı al
-            var hitCube = other.GetComponent<CubeController>();
-            if (hitCube == null) return;
-
-            // 2) Stack container’a taşı
-           // hitCube.transform.SetParent(cubeStackParent);
-
-            // 3) Pointer‑chain’i güncelle
-            hitCube.below = _lastStackedCube;
-            _lastStackedCube = hitCube;
-
-            // 4) Takip edilecek hedef ve offset’i ayarla
-            GameObject follow = (hitCube.below != null)
-                ? hitCube.below.gameObject
-                : gameObject;
-            Vector3 offset = (hitCube.below != null)
-                ? new Vector3(0, 0f, zOffset)
-                : new Vector3(0, yStep, zOffset);
-
-            hitCube.SetTargetStacked(follow, offset);
-
-            // (Opsiyonel) Havuzlama devreyse:
-            // PoolManager.Instance.ReturnToPool("Collectible", other.gameObject);
+            CollectCube(other.gameObject);
         }
     }
 
+    public void CollectCube(GameObject collectibleObj)
+    {
+        OnCollectibleHitEvent?.Invoke();
 
-    /// <summary>
-    /// Head pointer’ta tuttuğumuz en son küpü çıkarır.
-    /// Eğer küp yoksa TriggerFall() ile game over olur.
-    /// </summary>
+        var hitCube = collectibleObj.GetComponent<CubeController>();
+        if (hitCube == null) return;
+
+        // Collider/rigidbody açık kalsın, yığılmış küpler de toplasın
+        hitCube.gameObject.tag = "CollectorCube";
+         _collectedCubes.Add(hitCube);
+
+        // Pointer-chain’i güncelle
+        hitCube.below = _lastStackedCube;
+        _lastStackedCube = hitCube;
+
+        // Takip edilecek hedef ve ofset
+        GameObject follow = (hitCube.below != null)
+            ? hitCube.below.gameObject
+            : gameObject;
+        Vector3 offset = (hitCube.below != null)
+            ? new Vector3(0, 0f, zOffset)
+            : new Vector3(0, yStep, zOffset);
+
+        hitCube.SetTargetStacked(follow, offset);
+    }
+
     private void DropLastCube()
     {
         if (_lastStackedCube == null)
@@ -189,10 +177,11 @@ public class PlayerController : MonoBehaviour
         var toDrop = _lastStackedCube;
         _lastStackedCube = toDrop.below;
         toDrop.below = null;
-      //  toDrop.transform.SetParent(null);
-        toDrop.gameObject.SetActive(false);
-    }
+        _collectedCubes.Remove(toDrop);
 
+        toDrop.gameObject.SetActive(false);
+
+    }
 
     private void TriggerFall()
     {

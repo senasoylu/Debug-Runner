@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &30970121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1551,6 +1551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e2df4df2c612f4b8792fd3596a2029, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cubeStackParent: {fileID: 1412325639}
   animator: {fileID: 1696957045}
 --- !u!54 &1696957044
 Rigidbody:
@@ -2029,13 +2030,13 @@ MonoBehaviour:
   platformLength: 100
   playerForwardSpeed: 10
   playerSidewaySpeed: 20
-  zMaxDifferenceBetweenObstacles: 9
-  zMinDifferenceBetweenObstacles: 15
+  zMaxDifferenceBetweenObstacles: 25
+  zMinDifferenceBetweenObstacles: 45
   laneSpawnPlatformPrefab: {fileID: 1210189402689409947, guid: 7c387562f1aa63c4aa9053ed6bf4c32f, type: 3}
   platformParentPrefab: {fileID: 2008644894683680414, guid: 135fa405e4a177141bfd8715d5c8a99b, type: 3}
   platformParentObjects: []
-  zMaxDifferenceBetweenCollectibles: 2
-  zMinDifferenceBetweenCollectibles: 5
+  zMaxDifferenceBetweenCollectibles: 4
+  zMinDifferenceBetweenCollectibles: 8
   distanceMovingToPlayer: 20
   jumpDuration: 1
   jumpHeight: 2

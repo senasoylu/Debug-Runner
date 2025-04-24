@@ -8,7 +8,6 @@ public class CubeController : MonoBehaviour
     [SerializeField] private float _smoothTime = 0.15f;
 
     [HideInInspector] public CubeController below;
-    
 
     public void SetTargetStacked(GameObject target, Vector3 offset)
     {
@@ -18,13 +17,25 @@ public class CubeController : MonoBehaviour
 
     void LateUpdate()
     {
-        //  Hedef atanmamışsa (örneğin henüz SetTargetStacked çağrılmadıysa) çık
         if (_target == null) return;
-
-        Vector3 current = transform.position;
         Vector3 desired = _target.transform.position + _offset;
         transform.position = Vector3.SmoothDamp(
-            current, desired, ref _velocity, _smoothTime
+            transform.position, desired, ref _velocity, _smoothTime
         );
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        // Sadece bu küp önce Collectible olarak toplanmışsa (CollectorCube tag’li) ve
+        // çarptığı obje hâlâ Collectible tag’liyse
+        if (this.CompareTag("CollectorCube") && other.CompareTag("Collectible"))
+        {
+            // Kendi nesnesini tekrar toplamasın
+            if (other.gameObject == this.gameObject) return;
+
+            PlayerController.Instance.CollectCube(other.gameObject);
+        }
+    }
+
+
 }

@@ -9,6 +9,8 @@ TagManager:
   - PlatformLanePrefab
   - Obstacle
   - Collectible
+  - Building
+  - CollectorCube
   layers:
   - Default
   - TransparentFX
