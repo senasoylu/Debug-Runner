@@ -25,8 +25,9 @@ public class PlayerController : MonoBehaviour
 
     // Head pointer: en son yığılan küp
     private CubeController _lastStackedCube;
-    [SerializeField]
-    private List<CubeController> _collectedCubes = new List<CubeController>();
+
+    // Stack’teki tüm küpleri sıralı tutan liste
+    [SerializeField] private List<CubeController> _collectedCubes = new List<CubeController>();
 
     const float yStep = 0.5f;
     const float zOffset = 0.6f;
@@ -132,6 +133,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Obstacle"))
         {
             OnObstacleHitEvent?.Invoke();
+            // Player obstacle çarpışmasında sadece son küp koparsın:
             DropLastCube();
             PoolManager.Instance.ReturnToPool("Obstacle", other.gameObject);
         }
@@ -141,32 +143,69 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Yeni collectible toplandığında listeye ekler ve pointer-chain günceller.
+    /// </summary>
     public void CollectCube(GameObject collectibleObj)
     {
         OnCollectibleHitEvent?.Invoke();
-
         var hitCube = collectibleObj.GetComponent<CubeController>();
         if (hitCube == null) return;
 
-        // Collider/rigidbody açık kalsın, yığılmış küpler de toplasın
+        // Tag ayarlaması
         hitCube.gameObject.tag = "CollectorCube";
-         _collectedCubes.Add(hitCube);
 
-        // Pointer-chain’i güncelle
+        if (!_collectedCubes.Contains(hitCube))
+            _collectedCubes.Add(hitCube);
+
         hitCube.below = _lastStackedCube;
         _lastStackedCube = hitCube;
 
-        // Takip edilecek hedef ve ofset
-        GameObject follow = (hitCube.below != null)
-            ? hitCube.below.gameObject
-            : gameObject;
-        Vector3 offset = (hitCube.below != null)
+        GameObject follow = hitCube.below != null ? hitCube.below.gameObject : gameObject;
+        Vector3 offset = hitCube.below != null
             ? new Vector3(0, 0f, zOffset)
             : new Vector3(0, yStep, zOffset);
-
         hitCube.SetTargetStacked(follow, offset);
     }
 
+    /// <summary>
+    /// Collected listesinden startIndex ve sonrası küpleri koparır.
+    /// </summary>
+    public void DropFromIndex(int startIndex)
+    {
+        if (startIndex < 0 || startIndex >= _collectedCubes.Count) return;
+        for (int i = _collectedCubes.Count - 1; i >= startIndex; i--)
+        {
+            var cube = _collectedCubes[i];
+            if (cube == _lastStackedCube)
+                _lastStackedCube = cube.below;
+            cube.below = null;
+            _collectedCubes.RemoveAt(i);
+            cube.transform.SetParent(null);
+            cube.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Bir stacked küp obstacle çarptığında çağrılır.
+    /// </summary>
+    public void OnObstacleHitByCube(CubeController hitCube)
+    {
+        int idx = _collectedCubes.IndexOf(hitCube);
+        if (idx < 0) return;
+        DropFromIndex(idx);
+
+        // Eğer yığın tamamen boşaldıysa GAME OVER
+        if (_collectedCubes.Count == 0)
+        {
+            OnObstacleHitEvent?.Invoke();
+            TriggerFall();
+        }
+    }
+
+    /// <summary>
+    /// Oyuncunun kendisi obstacle çarptığında son küpü koparır.
+    /// </summary>
     private void DropLastCube()
     {
         if (_lastStackedCube == null)
@@ -177,10 +216,9 @@ public class PlayerController : MonoBehaviour
         var toDrop = _lastStackedCube;
         _lastStackedCube = toDrop.below;
         toDrop.below = null;
-        _collectedCubes.Remove(toDrop);
-
-        toDrop.gameObject.SetActive(false);
-
+        if (_collectedCubes.Contains(toDrop))
+            _collectedCubes.Remove(toDrop);
+        toDrop.transform.SetParent(null);
     }
 
     private void TriggerFall()
