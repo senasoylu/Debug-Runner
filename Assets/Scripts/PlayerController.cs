@@ -1,4 +1,5 @@
 ﻿// PlayerController.cs
+using DG.Tweening;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,6 +24,12 @@ public class PlayerController : MonoBehaviour
     private float _jumpTimer;
     private float _groundY;
 
+    public Transform[] scalingTransform;
+    public float maxScaleValue = 1.2f;
+    public float scalingTime = 1.0f;
+
+    private CubeController _collectorCube;
+
     // Head pointer: en son yığılan küp
     private CubeController _lastStackedCube;
 
@@ -35,6 +42,14 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+       
+            // En azından _tweenCount kadar Tween, _sequenceCount kadar Sequence baştan hazır olsun
+            DOTween.SetTweensCapacity(
+                tweenersCapacity: 500,  // örneğin 500 tane tekil Tween
+                sequencesCapacity: 250   // örneğin 250 tane Sequence
+            );
+            DOTween.Init();  // isteğe bağlı, otomatik init yerine kontrolü elinize alırsınız
+        
     }
 
     private void OnEnable()
@@ -61,6 +76,7 @@ public class PlayerController : MonoBehaviour
     {
         _gameSettings = FindObjectOfType<GameSettings>();
         animator = GetComponent<Animator>();
+      
     }
 
     private void Update()
@@ -133,7 +149,6 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Obstacle"))
         {
             OnObstacleHitEvent?.Invoke();
-            // Player obstacle çarpışmasında sadece son küp koparsın:
             DropLastCube();
             PoolManager.Instance.ReturnToPool("Obstacle", other.gameObject);
         }
@@ -143,21 +158,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Yeni collectible toplandığında listeye ekler ve pointer-chain günceller.
-    /// </summary>
     public void CollectCube(GameObject collectibleObj)
     {
         OnCollectibleHitEvent?.Invoke();
         var hitCube = collectibleObj.GetComponent<CubeController>();
         if (hitCube == null) return;
 
-        // Tag ayarlaması
+        // 1) “Yeniden toplanan” küpü stopper olarak sakla
+        _collectorCube = hitCube;
+        // 2) O küpe sadece bir kez tag ata
         hitCube.gameObject.tag = "CollectorCube";
 
+        // 3) Listeye ekle (aynı küp birden çok eklenmesin)
         if (!_collectedCubes.Contains(hitCube))
             _collectedCubes.Add(hitCube);
 
+        // 4) Stacking bağlantılarını kur
         hitCube.below = _lastStackedCube;
         _lastStackedCube = hitCube;
 
@@ -166,11 +182,38 @@ public class PlayerController : MonoBehaviour
             ? new Vector3(0, 0f, zOffset)
             : new Vector3(0, yStep, zOffset);
         hitCube.SetTargetStacked(follow, offset);
+
+        // 5) Dalga animasyonunu, yeni toplananın index’inden başlat
+        int startIndex = _collectedCubes.IndexOf(_collectorCube);
+        AnimateWaveFrom(startIndex);
+        
+      
+
+    }
+    private void AnimateWaveFrom(int startIndex)
+    {
+        const float maxScale = 0.8f;
+        const float originalScale = 0.5f;
+        const float duration = 0.2f;
+        const float delayStep = 0.05f;
+
+        if (startIndex <= 0) return;
+
+        for (int i = startIndex - 1; i >= 0; i--)
+        {
+            int step = (startIndex - 1) - i;
+            float delay = step * delayStep;
+            Transform t = _collectedCubes[i].transform;
+
+            t.DOKill();
+            DOTween.Sequence()
+                   .PrependInterval(delay)
+                   .Append(t.DOScale(maxScale, duration))
+                   .Append(t.DOScale(originalScale, duration));
+        }
     }
 
-    /// <summary>
-    /// Collected listesinden startIndex ve sonrası küpleri koparır.
-    /// </summary>
+
     public void DropFromIndex(int startIndex)
     {
         if (startIndex < 0 || startIndex >= _collectedCubes.Count) return;
@@ -186,9 +229,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Bir stacked küp obstacle çarptığında çağrılır.
-    /// </summary>
+   
     public void OnObstacleHitByCube(CubeController hitCube)
     {
         int idx = _collectedCubes.IndexOf(hitCube);
@@ -203,9 +244,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Oyuncunun kendisi obstacle çarptığında son küpü koparır.
-    /// </summary>
     private void DropLastCube()
     {
         if (_lastStackedCube == null)

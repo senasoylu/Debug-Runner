@@ -1,17 +1,15 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class CubeController : MonoBehaviour
 {
     [HideInInspector] public CubeController below;
-
+   
     private GameObject _target;
     private Vector3 _offset;
     private Vector3 _velocity;
     [SerializeField] private float _smoothTime = 0.15f;
-
-    /// <summary>
-    /// Yığına eklendiğinde takip edilecek hedef ve ofseti ayarlar.
-    /// </summary>
+  
     public void SetTargetStacked(GameObject target, Vector3 offset)
     {
         _target = target;
@@ -20,6 +18,7 @@ public class CubeController : MonoBehaviour
 
     void LateUpdate()
     {
+    
         if (_target == null) return;
         Vector3 desired = _target.transform.position + _offset;
         transform.position = Vector3.SmoothDamp(
@@ -30,6 +29,7 @@ public class CubeController : MonoBehaviour
         );
     }
 
+  
     void OnTriggerEnter(Collider other)
     {
         // 1) Eğer bir obstacle ile çarptıysa:
@@ -47,4 +47,5 @@ public class CubeController : MonoBehaviour
             PlayerController.Instance.CollectCube(other.gameObject);
         }
     }
+  
 }
