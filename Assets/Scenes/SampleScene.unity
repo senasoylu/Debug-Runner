@@ -1553,6 +1553,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cubeStackParent: {fileID: 1412325639}
   animator: {fileID: 1696957045}
+  scalingTransform: []
+  maxScaleValue: 1.2
+  scalingTime: 1
+  _collectedCubes: []
 --- !u!54 &1696957044
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2035,8 +2039,8 @@ MonoBehaviour:
   laneSpawnPlatformPrefab: {fileID: 1210189402689409947, guid: 7c387562f1aa63c4aa9053ed6bf4c32f, type: 3}
   platformParentPrefab: {fileID: 2008644894683680414, guid: 135fa405e4a177141bfd8715d5c8a99b, type: 3}
   platformParentObjects: []
-  zMaxDifferenceBetweenCollectibles: 4
-  zMinDifferenceBetweenCollectibles: 8
+  zMaxDifferenceBetweenCollectibles: 12
+  zMinDifferenceBetweenCollectibles: 30
   distanceMovingToPlayer: 20
   jumpDuration: 1
   jumpHeight: 2
