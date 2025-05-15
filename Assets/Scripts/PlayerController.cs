@@ -5,16 +5,21 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
-    public static  System.Action OnObstacleHitEvent;
-    public static  System.Action OnCollectibleHitEvent;
+    public static System.Action OnObstacleHitEvent;
+    public static System.Action OnCollectibleHitEvent;
 
-    [SerializeField] private Transform cubeStackParent;
+    [SerializeField]
+    private Animator _animator;
 
-    private GameSettings _gameSettings;
-    public Animator animator;
+    [SerializeField]
+    private PlayerSettings _playerSettings;
+
+    [SerializeField]
+    private PlatformSettings _platformSettings;
 
     private bool _isGameStarted;
     private bool _isJumping;
+
     private float _jumpTimer;
     private float _groundY;
 
@@ -22,7 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         Instance = this;
         DOTween.SetTweensCapacity(500, 250);
-        DOTween.Init();
+        DOTween.Init(); 
     }
 
     private void OnEnable()
@@ -45,38 +50,48 @@ public class PlayerController : MonoBehaviour
         GameManager.OnGameStartedEvent -= OnGameStarted;
     }
 
-    private void Start()
-    {
-        _gameSettings = FindObjectOfType<GameSettings>();
-        animator = GetComponent<Animator>();
+    public PlayerSettings GetPlayerSettings()
+    { 
+        return _playerSettings;
     }
 
     private void Update()
     {
-        if (!_isGameStarted) return;
+        if (!_isGameStarted)
+        {
+            return;
+        }
         MoveForward();
         MoveSideways();
-        if (_isJumping) UpdateJump();
+
+        if (_isJumping)
+        {
+            UpdateJump();
+        }
     }
 
     private void OnPlayerPressedLeftButton()
     {
-        if (_gameSettings.currentLaneIndex > 0)
-            _gameSettings.currentLaneIndex--;
+        if (_playerSettings.currentLaneIndex > 0)
+            _playerSettings.currentLaneIndex--;
     }
 
     private void OnPlayerPressedRightButton()
     {
-        if (_gameSettings.currentLaneIndex < _gameSettings.laneCount - 1)
-            _gameSettings.currentLaneIndex++;
-    }
+        if (_playerSettings.currentLaneIndex < _platformSettings.laneCount - 1)
+            _playerSettings.currentLaneIndex++;
+    }   
 
     private void OnGameOver(int score) => _isGameStarted = false;
+ 
     private void OnGameStarted() => _isGameStarted = true;
 
     private void OnJump()
     {
-        if (!_isJumping) StartJump();
+        if (!_isJumping)
+        {
+            StartJump();
+        }
     }
 
     private void StartJump()
@@ -89,11 +104,13 @@ public class PlayerController : MonoBehaviour
     private void UpdateJump()
     {
         _jumpTimer += Time.deltaTime;
-        float t = Mathf.Clamp01(_jumpTimer / _gameSettings.jumpDuration);
-        float yOffset = 4 * _gameSettings.jumpHeight * t * (1 - t);
+        float t = Mathf.Clamp01(_jumpTimer / _playerSettings.jumpDuration);
+        float yOffset = _playerSettings.jumpHeight * t * (1 - t);
         float newY = _groundY + yOffset;
+
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-        if (_jumpTimer >= _gameSettings.jumpDuration)
+
+        if (_jumpTimer >= _playerSettings.jumpDuration)
         {
             _isJumping = false;
             transform.position = new Vector3(transform.position.x, _groundY, transform.position.z);
@@ -102,28 +119,30 @@ public class PlayerController : MonoBehaviour
 
     private void MoveSideways()
     {
-        float targetX = _gameSettings.firstLanePositionX + _gameSettings.currentLaneIndex * _gameSettings.distanceBetweenLanes;
+        float targetX = _platformSettings.firstLanePositionX + _playerSettings.currentLaneIndex * _platformSettings.distanceBetweenLanes;
+
         Vector3 desired = new Vector3(targetX, transform.position.y, transform.position.z);
         Vector3 dir = (desired - transform.position).normalized;
-        float speed = _gameSettings.playerSidewaySpeed * Time.deltaTime;
+
+        float speed = _playerSettings.playerSidewaySpeed * Time.deltaTime;
         float dist = Vector3.Distance(transform.position, desired);
         transform.position += dir * Mathf.Min(speed, dist);
     }
 
     private void MoveForward()
     {
-        transform.Translate(Vector3.forward * _gameSettings.playerForwardSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * _playerSettings.playerForwardSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Obstacle"))
+        if (other.CompareTag(ObstacleSettings.OBSTACLE_TAG_STRING))
         {
             OnObstacleHitEvent?.Invoke();
-            CubeManager.Instance?.DropLastCube();
-            PoolManager.Instance?.ReturnToPool("Obstacle", other.gameObject);
+            CubeManager.Instance?.DropLastCube(); 
         }
-        else if (other.CompareTag("Collectible"))
+
+        else if (other.CompareTag(CollectibleSettings.COLLECTIBLE_TAG_STRING))
         {
             var cube = other.GetComponent<CubeController>();
             if (cube != null)
@@ -136,13 +155,16 @@ public class PlayerController : MonoBehaviour
 
     public void OnObstacleHitByCube(CubeController hitCube)
     {
-        if (hitCube == null) return;
+        if (hitCube == null)
+        {
+            return;
+        }
         CubeManager.Instance?.OnCubeHitObstacle(hitCube);
     }
 
     public void TriggerFall()
     {
-        animator.SetBool("isFalling", true);
+        _animator.SetBool("isFalling", true);
         _isGameStarted = false;
     }
 }

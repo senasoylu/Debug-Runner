@@ -53,6 +53,7 @@ public class UIManager : MonoBehaviour
 
         lastScoreText.text = "Last Score: " + score;
         lastScoreText.gameObject.SetActive(true);
+
         scoreText.gameObject.SetActive(false);
 
         restartButton.gameObject.SetActive(true);

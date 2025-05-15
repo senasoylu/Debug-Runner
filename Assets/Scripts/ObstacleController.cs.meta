@@ -3,7 +3,11 @@ guid: 89d5b7b5db3490144973b242cd9eb5fb
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _playerSettings: {fileID: 11400000, guid: deb0113d2533d0043b09e96d7bc69220, type: 2}
+  - _collectibleSettings: {fileID: 11400000, guid: edcf14397c2ed414c9bc7cf412cbfe17, type: 2}
+  - _platformSettings: {fileID: 11400000, guid: f28a1ec11b8d24442a42af11f6c5a512, type: 2}
+  - _obstacleSettings: {fileID: 11400000, guid: 17676e6452d30e54e9a75f85bdd03536, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

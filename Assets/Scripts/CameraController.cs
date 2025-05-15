@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
 
     private Vector3 _velocity;
 
-
     private void Start()
     {
         transform.position = target.transform.position + offset;
@@ -24,7 +23,5 @@ public class CameraController : MonoBehaviour
         Vector3 desiredPosition = target.transform.position + offset;
 
         transform.position = Vector3.SmoothDamp(currentPosition, desiredPosition, ref _velocity, _smoothTime);
-
-
     }
 }

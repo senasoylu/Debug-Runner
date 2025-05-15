@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public static OnGameOverDelegate OnGameOverEvent;
 
     private int _score = 0;
-    private int _addScore = 10;   // her küpte +10, her engelde –10
+    private int _addScore = 10;   
 
     private void OnEnable()
     {
@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Oyuna baþlarken skor 0 olsun, UI’a bildir:
         OnScoreUpdatedEvent?.Invoke(_score);
         OnGameStartedEvent?.Invoke();
     }
@@ -36,14 +35,12 @@ public class GameManager : MonoBehaviour
 
     private void OnObstacleHit()
     {
-        // Engel çarptýðýnda –10 puan
         if (_score >= _addScore)
         {
             AddScore(-_addScore);
         }
         else
         {
-            // Skor 0’ýn altýna inerse game over
             OnGameOverEvent?.Invoke(_score);
         }
     }

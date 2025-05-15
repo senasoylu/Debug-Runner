@@ -3,44 +3,47 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    public static PoolManager Instance; // Singleton
-    //statik tutunca unic olur ve deðiþmez istediðim zaman istediðim yeden çaðýrabilirim referanssýz kullanabilirim
-    // statikte maaliyetlidir her yerde kullanmamalýyýz
+    public static PoolManager Instance; 
+
     [System.Serializable]
-    //GC yi az tetiklemek için kullanlan bir sistemdir
+
     public class Pool
     {
-        public string tag;         // Örneðin "Bullet", "Obstacle", "Collectible", "X"
-        public GameObject prefab;  // Havuzlanacak prefab
-        public int size;           // Baþlangýç boyutu
+        public GameObject prefab;
+
+        public string tag;
+
+        public int size;          
         public int extendSize;
 
         public Queue<GameObject> _gameObjectQueue;
     }
 
-    public List<Pool> pools; // Inspector üzerinden havuz tanýmlamalarýnýzý yapýn
+    public List<Pool> pools; 
     public Dictionary<string, Pool> poolDictionary;
+
     private Transform _poolContainer;
 
-    void Awake() //start deðil çünkü starttan da önce çaðýrýlýr Execution Order da ilk sýradadýr
+    void Awake() 
     {
         if (Instance == null)
         {
-            Instance = this; // Singleton atamasý
-
+            Instance = this; 
         }
+
         else
         {
             Destroy(gameObject);
         }
-        _poolContainer = new GameObject("PoolParent").transform;
-        Initialize();
 
+        _poolContainer = new GameObject("PoolParent").transform;
+
+        Initialize();
     }
 
     private void Initialize()
     {
-        poolDictionary = new Dictionary<string, Pool>(); //baþýnda new varsa bu da maaliyeti etkiler
+        poolDictionary = new Dictionary<string, Pool>(); 
 
         foreach (Pool pool in pools)
         {
@@ -61,46 +64,43 @@ public class PoolManager : MonoBehaviour
 
     public GameObject GetFromPool(string tag)
     {
-        if (!poolDictionary.ContainsKey(tag)) //Pool dict' de bu tag i arýyor böyle bir key var mý diyor
+        if (!poolDictionary.ContainsKey(tag))
         {
             Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
             return null;
         }
 
-        int count = poolDictionary[tag]._gameObjectQueue.Count; // "X" tagim de kaç objem var
-        if (count <= 0) // tag de obje yoksa
+        int count = poolDictionary[tag]._gameObjectQueue.Count; 
+        if (count <= 0) 
         {
-            ExtendPool(tag); //pool geniþlesin
+            ExtendPool(tag);
         }
-        GameObject objectToSpawn = poolDictionary[tag]._gameObjectQueue.Dequeue(); //bütün üretilen X tagýndaki objeleri Dequeue ile listeden çýkar diyip öne çekiyosun
-        objectToSpawn.SetActive(true); // görünen obje oldum
-        return objectToSpawn; //SpawnFromPool çaðýrýnca GameObject döndürücem demek 
+        GameObject objectToSpawn = poolDictionary[tag]._gameObjectQueue.Dequeue();
+        objectToSpawn.SetActive(true); 
+        return objectToSpawn; 
     }
 
     private void ExtendPool(string tag)
     {
-        if (poolDictionary.TryGetValue(tag, out Pool pool)) //sözlüðe giriyorum ve içinde bu tagden var mý diye soruyorum eðer varsa 
-        {                                                   //çýktý Pool sýnýfýndan POOl tagi ile olduðunu doðruluyorum
-            for (int i = 0; i < pool.extendSize; i++) //geniþlettiðim sayý kadar
+        if (poolDictionary.TryGetValue(tag, out Pool pool)) 
+        {                                                  
+            for (int i = 0; i < pool.extendSize; i++) 
             {
-                GameObject obj = Instantiate(pool.prefab); // üret
-                obj.SetActive(false); //kapat
-                pool._gameObjectQueue.Enqueue(obj); //listeye al
+                GameObject obj = Instantiate(pool.prefab); 
+                obj.SetActive(false); 
+                pool._gameObjectQueue.Enqueue(obj); 
                 obj.transform.SetParent(_poolContainer);
                _poolContainer.position = Vector3.zero;
             }
         }
     }
 
-    /// HACKED BY_PARAZIT !!! 
-
-
-    public void ReturnToPool(string tag, GameObject obj) //"x"" tagli objem için
+    public void ReturnToPool(string tag, GameObject obj) 
     {
-        obj.SetActive(false); //false yap
+        obj.SetActive(false);
         obj.transform.position = Vector3.zero;
         obj.transform.rotation = Quaternion.identity;
        
-        poolDictionary[tag]._gameObjectQueue.Enqueue(obj); //geri listeye al
+        poolDictionary[tag]._gameObjectQueue.Enqueue(obj);
     }
 }

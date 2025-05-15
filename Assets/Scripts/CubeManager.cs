@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,37 +6,63 @@ public class CubeManager : MonoBehaviour
 {
     public static CubeManager Instance { get; private set; }
 
-    [SerializeField] private Transform stackFollowTarget;
-    [SerializeField] private float yStep = 0.5f;
-    [SerializeField] private float zOffset = 0.6f;
-   
+    [SerializeField]
+    private Transform _stackFollowTarget;
 
+    [SerializeField]
+    private const float Y_STEP = 0.5f;
+    [SerializeField]
+    private const float Z_OFFSET = 0.6f;
+
+    [SerializeField]
+    private ObstacleSettings _obstacleSettings;
+   
     private CubeController _lastStackedCube;
+
+    private GameSettings _settings;
+
     private List<CubeController> _collectedCubes = new List<CubeController>();
 
     public int StackCount => _collectedCubes.Count;
+
+    private int _explodeIndexCounter = 0;
 
     private void Awake()
     {
         Instance = this;
     }
- 
-    
+
+    private void Start()
+    {
+        _settings=FindObjectOfType<GameSettings>();
+    }
+
     public void CollectCube(GameObject collectibleObj, CubeController triggeringCube)
     {
-        var hitCube = collectibleObj.GetComponent<CubeController>();
-        if (hitCube == null || _collectedCubes.Contains(hitCube)) return;
-
+        CubeController hitCube = collectibleObj.GetComponent<CubeController>();
+        if (hitCube == null || _collectedCubes.Contains(hitCube))
+        {
+            return;
+        }
+           
         hitCube.gameObject.tag = "CollectorCube";
         _collectedCubes.Add(hitCube);
+
         hitCube.below = _lastStackedCube;
         _lastStackedCube = hitCube;
 
-        GameObject follow = hitCube.below != null ? hitCube.below.gameObject : stackFollowTarget.gameObject;
-        Vector3 offset = hitCube.below != null ? new Vector3(0, 0f, zOffset) : new Vector3(0, yStep, zOffset);
+        GameObject follow = hitCube.below != null 
+            ? hitCube.below.gameObject 
+            : _stackFollowTarget.gameObject;
+
+        Vector3 offset = hitCube.below != null
+            ? new Vector3(0, 0f, Z_OFFSET) 
+            : new Vector3(0, Y_STEP, Z_OFFSET);
+
         hitCube.SetTargetStacked(follow, offset);
 
         AnimateWaveDownToPlayer(triggeringCube);
+
         PlayerController.OnCollectibleHitEvent?.Invoke();
     }
 
@@ -48,7 +74,7 @@ public class CubeManager : MonoBehaviour
             return;
         }
 
-        var toDrop = _lastStackedCube;
+        CubeController toDrop = _lastStackedCube;
         _lastStackedCube = toDrop.below;
         toDrop.below = null;
         _collectedCubes.Remove(toDrop);
@@ -59,7 +85,8 @@ public class CubeManager : MonoBehaviour
     {
         for (int i = _collectedCubes.Count - 1; i >= startIndex; i--)
         {
-            var cube = _collectedCubes[i];
+            CubeController cube = _collectedCubes[i];
+
             if (cube == _lastStackedCube)
                 _lastStackedCube = cube.below;
 
@@ -69,16 +96,20 @@ public class CubeManager : MonoBehaviour
 
         if (_collectedCubes.Count == 0)
         {
-            PlayerController.OnObstacleHitEvent?.Invoke();
+            GameManager.OnGameOverEvent?.Invoke(0);
             PlayerController.Instance.TriggerFall();
         }
     }
 
     public void OnCubeHitObstacle(CubeController hitCube)
     {
-        int idx = _collectedCubes.IndexOf(hitCube);
-        if (idx < 0) return;
-        DropFromIndex(idx);
+        int hitCubeIndex = _collectedCubes.IndexOf(hitCube);
+
+        if (hitCubeIndex < 0)
+        {
+            return;
+        }
+        DropFromIndex(hitCubeIndex);
     }
 
     private void ExplodeCube(CubeController cube)
@@ -86,33 +117,52 @@ public class CubeManager : MonoBehaviour
         cube.below = null;
         cube.transform.SetParent(null);
         cube.SetTargetStacked(null, Vector3.zero);
-        cube.tag = "Collectible";
+        cube.tag = CollectibleSettings.COLLECTIBLE_TAG_STRING;
 
-        var collider = cube.GetComponent<Collider>();
+        Collider collider = cube.GetComponent<Collider>();
         if (collider != null)
         {
             collider.enabled = true;
             collider.isTrigger = true;
         }
 
-        Vector3 targetPos = new Vector3(
-            Random.Range(-2.7f, 1.7f),
-            0.5f,
-            cube.transform.position.z + Random.Range(1.5f, 3f)
-        );
+        const float xRandomDistanceLeft = -2.7f;
+        const float xRandomDistanceRight = 1.7f;
+        const float zMinDistance = 4.0f;
+        const float zMaxDistance = 16.0f;
 
-        cube.transform.DOJump(targetPos, 0.8f, 1, 0.4f).SetEase(Ease.OutQuad);
+        const float jumpDuration = 0.4f;
+        const float jumpPower = 0.6f;
+        const int numberOfJump = 1;
+
+        float spreadX = Random.Range(xRandomDistanceLeft, xRandomDistanceRight);
+        float spreadZ = Random.Range(zMinDistance, zMaxDistance);
+
+        float baseZ = _lastStackedCube != null
+            ? _lastStackedCube.transform.position.z
+            : cube.transform.position.z;
+
+        Vector3 targetPos = new Vector3(spreadX, 0.5f, baseZ + spreadZ);
+
+        cube.transform.DOJump(targetPos, jumpPower, numberOfJump, jumpDuration)
+            .SetEase(Ease.OutQuad);
+
+        _explodeIndexCounter++;
     }
 
     private void AnimateWaveDownToPlayer(CubeController fromCube)
     {
-        float maxScale = 1.0f;
-        float originalScale = 0.5f;
-        float duration = 0.2f;
-        float delayStep = 0.05f;
-
+        const float maxScale = 1.0f;
+        const float originalScale = 0.5f;
+        const float duration = 0.2f;
+        const float delayStep = 0.05f;
+       
         int fromIndex = _collectedCubes.IndexOf(fromCube);
-        if (fromIndex < 0) return;
+
+        if (fromIndex < 0)
+        {
+            return;
+        }
 
         int step = 0;
         for (int i = fromIndex; i >= 0; i--)

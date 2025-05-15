@@ -5,17 +5,32 @@ using UnityEngine;
 public class ObstacleController : MonoBehaviour
 {
     private GameSettings _gameSettings;
+
+    [SerializeField] 
+    private PlayerSettings _playerSettings;
+
+    [SerializeField]
+    private CollectibleSettings _collectibleSettings;
+
+    [SerializeField]
+    private PlatformSettings _platformSettings;
+
+    [SerializeField]
+    private ObstacleSettings _obstacleSettings;
+
     public float lastObstaclePositionZ;
+    private float _maxObstacleSpawnAhead = 150f;
     private void Start()
     {
         _gameSettings = FindObjectOfType<GameSettings>();
-      lastObstaclePositionZ = _gameSettings.player.transform.position.z + _gameSettings.distanceMovingToPlayer;
+
+      lastObstaclePositionZ = _gameSettings.player.transform.position.z +_playerSettings.distanceMovingToPlayer;
         SpawnObstacle();
     }
 
     private void Update()
     {
-        if (lastObstaclePositionZ< _gameSettings.player.transform.position.z + 150f)
+        if (lastObstaclePositionZ< _gameSettings.player.transform.position.z + _maxObstacleSpawnAhead)
         {
             SpawnObstacle();
         }
@@ -23,25 +38,29 @@ public class ObstacleController : MonoBehaviour
 
     private void SpawnObstacle()
     {
-        while (lastObstaclePositionZ < _gameSettings.player.transform.position.z + 150f) //oyuncunun 150 metre ilerisine kadar obstacle olsun 
+        while (lastObstaclePositionZ < _gameSettings.player.transform.position.z + _maxObstacleSpawnAhead) 
         {
-            List<int> allLaneIndices = new List<int>(); //lane index list
-            for (int i = 0; i < _gameSettings.laneCount; i++) 
-            {
-                allLaneIndices.Add(i); //lane listesine indeksleri ekle
-            }
-            allLaneIndices.Shuffle(); //karıştır(fatih abinin gönderdiği yerden Shuffle çalıştı
+            List<int> allLaneIndices = new List<int>(); 
 
-            int obstacleSpawnAmount = Random.Range(1, _gameSettings.laneCount + 1); //engel sayısı değişken olsun 1 ve 5 arası olsun +1 dedik hepsi dahil olsun diye
-            float zRandomOffset = Random.Range(_gameSettings.zMinDifferenceBetweenObstacles, _gameSettings.zMaxDifferenceBetweenObstacles);//obs arası mesafe
+            for (int i = 0; i < _platformSettings.laneCount; i++) 
+            {
+                allLaneIndices.Add(i); 
+            }
+
+            allLaneIndices.Shuffle(); 
+
+            int obstacleSpawnAmount = Random.Range(1, _platformSettings.laneCount ); 
+
+            float zRandomOffset = Random.Range(_obstacleSettings.zMinDifferenceBetweenObstacles, _obstacleSettings.zMaxDifferenceBetweenObstacles);
             float newZPosition = lastObstaclePositionZ + zRandomOffset; 
 
-            for (int i = 0; i < obstacleSpawnAmount; i++)// lanelerde
+            for (int i = 0; i < obstacleSpawnAmount; i++)
             {
-                float xPosition = _gameSettings.firstLanePositionX + allLaneIndices[i] * _gameSettings.distanceBetweenLanes;
-                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool(GameSettings.OBSTACLE_TAG_STRING);
+                float xPosition = _platformSettings.firstLanePositionX + allLaneIndices[i] * _platformSettings.distanceBetweenLanes;
+                GameObject spawnedObstacle = PoolManager.Instance.GetFromPool(ObstacleSettings.OBSTACLE_TAG_STRING);
                 spawnedObstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
             }
+
             lastObstaclePositionZ = newZPosition;
         }
     }
