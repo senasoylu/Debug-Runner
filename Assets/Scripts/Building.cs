@@ -2,23 +2,21 @@
 
 public class Building : MonoBehaviour
 {
-    private GameSettings _gameSettings;
-    [SerializeField]
-    private PlayerSettings _playerSettings;
     [SerializeField]
     private EnviromentSettings _enviromentSettings;
-    void Start()
-    {
-        _gameSettings = FindObjectOfType<GameSettings>();
-        
 
-    }
+    private Transform _playerTransform;
 
     void Update()
     {
-        if (transform.position.z < _gameSettings.player.transform.position.z - _gameSettings.distanceMovingToPlayer)
+        Debug.Log(_enviromentSettings == null);
+        if (transform.position.z < PlayerController.Instance.transform.position.z - _enviromentSettings.distanceMovingToPlayer)
         {
             PoolManager.Instance.ReturnToPool(EnviromentSettings.BUILDING_TAG_STRING, gameObject); //   objelerini havuza döndür
         }
+    }
+    public void SetPlayerTransform(Transform playerTransform)
+    {
+        _playerTransform = playerTransform;
     }
 }

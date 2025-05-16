@@ -6,10 +6,8 @@ public class GameSettings : MonoBehaviour
     #region Player
     [Header("Player Related")]
     public GameObject player;
-    public float distanceMovingToPlayer = 20f;
     #endregion
     [Space]
-
     #region Platforms
     [Header("Platform Related")]
     public GameObject laneSpawnPlatformPrefab;

@@ -17,5 +17,6 @@ public class EnviromentSettings : ScriptableObject
     public float maxHeight = 12.0f;
     public float minDifferenceBetweenBuilding = 20.0f;
     public float maxDifferenceBetweenBuilding = 50.0f;
-
+    public float distanceMovingToPlayer = 20f;
+    public float _lastBuildingPositionZTop = 150f;
 }

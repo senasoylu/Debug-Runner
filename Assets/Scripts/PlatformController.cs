@@ -3,8 +3,10 @@ using UnityEngine;
 public class PlatformController : MonoBehaviour
 {
     private GameSettings _gameSettings;
+
     [SerializeField]
     private PlatformSettings _platformSettings;
+
     private float _halfPlatformWidth = 2f;
 
     private void Start()

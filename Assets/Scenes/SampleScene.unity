@@ -152,8 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89d5b7b5db3490144973b242cd9eb5fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerSettings: {fileID: 11400000, guid: deb0113d2533d0043b09e96d7bc69220, type: 2}
-  _collectibleSettings: {fileID: 11400000, guid: edcf14397c2ed414c9bc7cf412cbfe17, type: 2}
+  _playerController: {fileID: 1696957043}
   _platformSettings: {fileID: 11400000, guid: f28a1ec11b8d24442a42af11f6c5a512, type: 2}
   _obstacleSettings: {fileID: 11400000, guid: 17676e6452d30e54e9a75f85bdd03536, type: 2}
   lastObstaclePositionZ: 0
@@ -2078,7 +2077,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1696957041}
-  distanceMovingToPlayer: 20
   laneSpawnPlatformPrefab: {fileID: 1210189402689409947, guid: 7c387562f1aa63c4aa9053ed6bf4c32f, type: 3}
   platformParentPrefab: {fileID: 2008644894683680414, guid: 135fa405e4a177141bfd8715d5c8a99b, type: 3}
   platformParentObjects: []

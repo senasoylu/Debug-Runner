@@ -1,37 +1,33 @@
 using UnityEngine;
-using System.Collections.Generic;
-using System.Collections;
 
 public class CollectibleController : MonoBehaviour
 {
-
-    private GameSettings _gameSettings;
     [SerializeField]
     private PlatformSettings _platformSettings;
+
     [SerializeField]
     private CollectibleSettings _collectibleSettings;
+
     [SerializeField]
-    private PlayerSettings _playerSettings;
+    private PlayerController _playerController;
+
 
     private int _lastSelectedLaneIndex;
 
     public float _lastCollectiblePositionZ;
 
-    private float _distanceBetweenPlayerandCol = 150f;
+  
 
     private void Start()
     {
-        _gameSettings = FindObjectOfType<GameSettings>();
-
-        _lastCollectiblePositionZ = _gameSettings.player.transform.position.z + _playerSettings.distanceMovingToPlayer;
+        _lastCollectiblePositionZ = _playerController.transform.position.z + _collectibleSettings.distanceMovingToPlayer;
       
-
         SpawnCollectibles();
     }
 
     private void Update()
     {
-        if(_lastCollectiblePositionZ<_gameSettings.player.transform.position.z+_distanceBetweenPlayerandCol)
+        if(_lastCollectiblePositionZ<_playerController.transform.position.z+_collectibleSettings._distanceBetweenPlayerandCol)
         {
             GameObject spawnedCollectible = PoolManager.Instance.GetFromPool(CollectibleSettings.COLLECTIBLE_TAG_STRING);
             SetNewPositionToCollectible(spawnedCollectible);
@@ -39,7 +35,7 @@ public class CollectibleController : MonoBehaviour
 
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag(CollectibleSettings.COLLECTIBLE_TAG_STRING))
         {
-            if (obj.transform.position.z < _gameSettings.player.transform.position.z - _playerSettings.distanceMovingToPlayer)
+            if (obj.transform.position.z < _playerController.transform.position.z -_collectibleSettings.distanceMovingToPlayer)
             {
                 PoolManager.Instance.ReturnToPool(CollectibleSettings.COLLECTIBLE_TAG_STRING, obj);
             }
@@ -51,9 +47,10 @@ public class CollectibleController : MonoBehaviour
         int laneCountWithConnections = _platformSettings.laneCount + _platformSettings.laneCount - 1;
         _lastSelectedLaneIndex = Random.Range(0, laneCountWithConnections);
 
-        while (_lastCollectiblePositionZ < _gameSettings.player.transform.position.z + _distanceBetweenPlayerandCol)
+        while (_lastCollectiblePositionZ < _playerController.transform.position.z + _collectibleSettings._distanceBetweenPlayerandCol)
         {
             GameObject spawnedCollectible = PoolManager.Instance.GetFromPool(CollectibleSettings.COLLECTIBLE_TAG_STRING);
+            spawnedCollectible.GetComponent<Collectible>().SetPlayerTransform(_playerController.transform);
             SetNewPositionToCollectible(spawnedCollectible);
         }
     }

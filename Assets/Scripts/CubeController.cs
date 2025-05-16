@@ -7,8 +7,6 @@ public class CubeController : MonoBehaviour
 
     private GameObject _target;
 
-    private GameSettings _gameSettings;
-
     private Vector3 _offset;
     private Vector3 _velocity;
 
@@ -17,13 +15,9 @@ public class CubeController : MonoBehaviour
 
     [SerializeField]
     private ObstacleSettings _obstacleSettings;
+
     [SerializeField]
     private CollectibleSettings _collectibleSettings;
-
-    private void Start()
-    {
-        _gameSettings=FindObjectOfType<GameSettings>();
-    }
 
     public void SetTargetStacked(GameObject target, Vector3 offset)
     {

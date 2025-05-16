@@ -146,3 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2209edd319ac9c4c81b7e312a39686a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerController: {fileID: 0}
+  _playerSettings: {fileID: 11400000, guid: deb0113d2533d0043b09e96d7bc69220, type: 2}
+  _obstacleSettings: {fileID: 11400000, guid: 17676e6452d30e54e9a75f85bdd03536, type: 2}

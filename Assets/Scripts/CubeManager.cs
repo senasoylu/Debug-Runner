@@ -9,17 +9,12 @@ public class CubeManager : MonoBehaviour
     [SerializeField]
     private Transform _stackFollowTarget;
 
-    [SerializeField]
-    private const float Y_STEP = 0.5f;
-    [SerializeField]
-    private const float Z_OFFSET = 0.6f;
 
-    [SerializeField]
-    private ObstacleSettings _obstacleSettings;
-   
+    private float Y_STEP = 0.5f; //
+
+    private float Z_OFFSET = 0.6f;//
+
     private CubeController _lastStackedCube;
-
-    private GameSettings _settings;
 
     private List<CubeController> _collectedCubes = new List<CubeController>();
 
@@ -30,11 +25,6 @@ public class CubeManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    private void Start()
-    {
-        _settings=FindObjectOfType<GameSettings>();
     }
 
     public void CollectCube(GameObject collectibleObj, CubeController triggeringCube)

@@ -1,16 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstacleController : MonoBehaviour
 {
-    private GameSettings _gameSettings;
-
-    [SerializeField] 
-    private PlayerSettings _playerSettings;
-
     [SerializeField]
-    private CollectibleSettings _collectibleSettings;
+    private PlayerController _playerController;
 
     [SerializeField]
     private PlatformSettings _platformSettings;
@@ -19,26 +13,24 @@ public class ObstacleController : MonoBehaviour
     private ObstacleSettings _obstacleSettings;
 
     public float lastObstaclePositionZ;
-    private float _maxObstacleSpawnAhead = 150f;
+    
     private void Start()
     {
-        _gameSettings = FindObjectOfType<GameSettings>();
-
-      lastObstaclePositionZ = _gameSettings.player.transform.position.z +_playerSettings.distanceMovingToPlayer;
-        SpawnObstacle();
+      lastObstaclePositionZ = _playerController.transform.position.z +_obstacleSettings.distanceMovingToPlayer;
+       SpawnObstacle();
     }
 
     private void Update()
     {
-        if (lastObstaclePositionZ< _gameSettings.player.transform.position.z + _maxObstacleSpawnAhead)
+        if (lastObstaclePositionZ< _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead)
         {
-            SpawnObstacle();
+          SpawnObstacle();
         }
     }
 
     private void SpawnObstacle()
     {
-        while (lastObstaclePositionZ < _gameSettings.player.transform.position.z + _maxObstacleSpawnAhead) 
+        while (lastObstaclePositionZ < _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead) 
         {
             List<int> allLaneIndices = new List<int>(); 
 
@@ -58,6 +50,8 @@ public class ObstacleController : MonoBehaviour
             {
                 float xPosition = _platformSettings.firstLanePositionX + allLaneIndices[i] * _platformSettings.distanceBetweenLanes;
                 GameObject spawnedObstacle = PoolManager.Instance.GetFromPool(ObstacleSettings.OBSTACLE_TAG_STRING);
+
+                spawnedObstacle.GetComponent<Obstacle>().SetPlayerTransform(_playerController.transform);
                 spawnedObstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
             }
 

@@ -2,21 +2,20 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-    private GameSettings _gameSettings;
-    [SerializeField]
-    private PlayerSettings _playerSettings;
     [SerializeField]
     private ObstacleSettings _obstacleSettings;
-    void Start()
-    {
-        _gameSettings = FindObjectOfType<GameSettings>();
-    }
 
+    private Transform _playerTransform;
     void Update()
     {
-        if (transform.position.z < _gameSettings.player.transform.position.z - _gameSettings.distanceMovingToPlayer)
+        if (transform.position.z < _playerTransform.position.z -_obstacleSettings.distanceMovingToPlayer)
         {
             PoolManager.Instance.ReturnToPool(ObstacleSettings.OBSTACLE_TAG_STRING, gameObject); 
         }
+    }
+
+    public void SetPlayerTransform(Transform playerTransform)
+    {
+        _playerTransform = playerTransform;
     }
 }

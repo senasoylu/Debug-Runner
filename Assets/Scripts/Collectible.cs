@@ -1,24 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-    private GameSettings _gameSettings;
-    [SerializeField]
-    private PlayerSettings _playerSettings;
     [SerializeField]
     private CollectibleSettings _collectibleSettings;
-    void Start()
-    {
-        _gameSettings = FindObjectOfType<GameSettings>();
-    }
 
+    private Transform _playerTransform;
+   
     void Update()
     {
-        if (transform.position.z < _gameSettings.player.transform.position.z - _playerSettings.distanceMovingToPlayer)
+        if (transform.position.z < PlayerController.Instance.transform.position.z - _collectibleSettings.distanceMovingToPlayer)
         {
-            PoolManager.Instance.ReturnToPool(CollectibleSettings.COLLECTIBLE_TAG_STRING, gameObject); //  collectible objelerini havuza döndür
+            PoolManager.Instance.ReturnToPool(CollectibleSettings.COLLECTIBLE_TAG_STRING, gameObject); //collectible objelerini havuza döndür
         }
+    }
+    public void SetPlayerTransform(Transform playerTransform)
+    {
+        _playerTransform = playerTransform;
     }
 }

@@ -9,5 +9,8 @@ public class ObstacleSettings : ScriptableObject
     public float zMaxDifferenceBetweenObstacles = 35f;
     public float zMinDifferenceBetweenObstacles = 50f;
 
+    public float maxSpawnDistanceAhead = 150f;
+    public float distanceMovingToPlayer = 20f;
+
     public const string OBSTACLE_TAG_STRING = "Obstacle";
 }

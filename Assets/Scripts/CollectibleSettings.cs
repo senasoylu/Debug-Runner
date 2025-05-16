@@ -9,7 +9,6 @@ public class CollectibleSettings : ScriptableObject
 
     public float zMaxDifferenceBetweenCollectibles = 2f;
     public float zMinDifferenceBetweenCollectibles = 5f;
-  
-
-
+    public float distanceMovingToPlayer = 20f;
+    public float _distanceBetweenPlayerandCol = 150f;
 }
