@@ -16,7 +16,6 @@ public class BuildingController : MonoBehaviour
  
     void Start()
     {
-      
         _lastBuildingPositionZLeft = _playerController.transform.position.z + _enviromentSettings.distanceMovingToPlayer;
         _lastBuildingPositionZRight =_playerController.transform.position.z + _enviromentSettings.distanceMovingToPlayer;
     }

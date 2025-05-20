@@ -11,12 +11,9 @@ public class CollectibleController : MonoBehaviour
     [SerializeField]
     private PlayerController _playerController;
 
-
     private int _lastSelectedLaneIndex;
 
     public float _lastCollectiblePositionZ;
-
-  
 
     private void Start()
     {

@@ -1,28 +1,34 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformController : MonoBehaviour
 {
-    private GameSettings _gameSettings;
+    [SerializeField]
+    private PlayerController _playerController;
 
     [SerializeField]
     private PlatformSettings _platformSettings;
 
-    private float _halfPlatformWidth = 2f;
+    [SerializeField]
+    private List<GameObject> _platformParentObjects = new List<GameObject>();
 
     private void Start()
     {
-        _gameSettings = FindObjectOfType<GameSettings>();
         SpawnPlatformParents();
     }
     
+    public PlatformSettings GetPlatformsSettings()
+    { 
+        return _platformSettings;
+    }
     private void SpawnPlatformParents()
     {
         for (int i = 0; i < _platformSettings.platformCount; i++)
         {
-            GameObject spawnedPlatformParent = Instantiate(_gameSettings.platformParentPrefab);
+            GameObject spawnedPlatformParent = Instantiate(_platformSettings.platformParentPrefab);
             spawnedPlatformParent.transform.position = new Vector3(0, 0, spawnedPlatformParent.transform.position.z + (i * _platformSettings.platformLength));
             SpawnLanesForPlatform(spawnedPlatformParent);
-            _gameSettings.platformParentObjects.Add(spawnedPlatformParent);
+           _platformParentObjects.Add(spawnedPlatformParent);
         }
     }
 
@@ -37,18 +43,18 @@ public class PlatformController : MonoBehaviour
         {
             float xPosition = _platformSettings.firstLanePositionX +(i * _platformSettings.distanceBetweenLanes);
           
-            Vector3 spawnPosition = new Vector3(xPosition, 0, platformObj.transform.position.z - _platformSettings.platformLength / _halfPlatformWidth);
+            Vector3 spawnPosition = new Vector3(xPosition, 0, platformObj.transform.position.z - _platformSettings.platformLength / _platformSettings._halfOfPlatformWidth);
 
-            GameObject newLane = Instantiate(_gameSettings.laneSpawnPlatformPrefab, spawnPosition, Quaternion.identity);
+            GameObject newLane = Instantiate(_platformSettings.laneSpawnPlatformPrefab, spawnPosition, Quaternion.identity);
             newLane.transform.SetParent(platformObj.transform);
         }
     }
 
     private void MovePlatformsIfNeeded()
     {
-        foreach (GameObject currentPlatformParent in _gameSettings.platformParentObjects)
+        foreach (GameObject currentPlatformParent in _platformParentObjects)
         {
-            if (_gameSettings.player.transform.position.z > currentPlatformParent.transform.position.z + _platformSettings.platformLength / _halfPlatformWidth)
+            if (_playerController.transform.position.z > currentPlatformParent.transform.position.z + _platformSettings.platformLength /_platformSettings._halfOfPlatformWidth)
             {
                 currentPlatformParent.transform.position = new Vector3(0, 0, currentPlatformParent.transform.position.z + _platformSettings.platformLength * _platformSettings.platformCount);
             }

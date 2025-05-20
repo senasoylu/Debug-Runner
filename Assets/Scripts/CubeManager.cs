@@ -9,10 +9,8 @@ public class CubeManager : MonoBehaviour
     [SerializeField]
     private Transform _stackFollowTarget;
 
-
-    private float Y_STEP = 0.5f; //
-
-    private float Z_OFFSET = 0.6f;//
+    [SerializeField]
+    private CollectibleSettings _collectibleSettings;
 
     private CubeController _lastStackedCube;
 
@@ -46,8 +44,8 @@ public class CubeManager : MonoBehaviour
             : _stackFollowTarget.gameObject;
 
         Vector3 offset = hitCube.below != null
-            ? new Vector3(0, 0f, Z_OFFSET) 
-            : new Vector3(0, Y_STEP, Z_OFFSET);
+            ? new Vector3(0, 0f, _collectibleSettings.Z_OFFSET) 
+            : new Vector3(0,_collectibleSettings.Y_STEP, _collectibleSettings.Z_OFFSET);
 
         hitCube.SetTargetStacked(follow, offset);
 

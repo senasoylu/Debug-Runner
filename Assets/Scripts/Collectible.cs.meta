@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - _playerSettings: {fileID: 11400000, guid: deb0113d2533d0043b09e96d7bc69220, type: 2}
+  - _collectibleSettings: {fileID: 11400000, guid: edcf14397c2ed414c9bc7cf412cbfe17, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
