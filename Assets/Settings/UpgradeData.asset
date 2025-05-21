@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 066c42b2324204344b4c9ea743ebb13b, type: 3}
-  m_Name: PlayerData
+  m_Script: {fileID: 11500000, guid: 60f2b366bcd9ed34aa0d66955dd3431a, type: 3}
+  m_Name: UpgradeData
   m_EditorClassIdentifier: 
-  playerForwardSpeed: 10
-  playerSidewaySpeed: 20
-  jumpDuration: 1
-  jumpHeight: 3
-  currentLaneIndex: 1
-  originalForwardSpeed: 10
+  upgradeName: 
+  description: 
+  icon: {fileID: 0}
+  type: 0
+  multiplier: 2

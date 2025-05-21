@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: b098343ef57b4724dae1b2f9aacbb1bd
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {instanceID: 0}
+  - upgradeZonePrefab: {fileID: 1234824089031576306, guid: d11f32a97ffdf0440800232a24455eba, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

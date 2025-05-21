@@ -43,7 +43,7 @@ public class PlatformController : MonoBehaviour
         {
             float xPosition = _platformSettings.firstLanePositionX +(i * _platformSettings.distanceBetweenLanes);
           
-            Vector3 spawnPosition = new Vector3(xPosition, 0, platformObj.transform.position.z - _platformSettings.platformLength / _platformSettings._halfOfPlatformWidth);
+            Vector3 spawnPosition = new Vector3(xPosition, 0, platformObj.transform.position.z - _platformSettings.platformLength / _platformSettings.halfOfPlatformWidth);
 
             GameObject newLane = Instantiate(_platformSettings.laneSpawnPlatformPrefab, spawnPosition, Quaternion.identity);
             newLane.transform.SetParent(platformObj.transform);
@@ -54,7 +54,7 @@ public class PlatformController : MonoBehaviour
     {
         foreach (GameObject currentPlatformParent in _platformParentObjects)
         {
-            if (_playerController.transform.position.z > currentPlatformParent.transform.position.z + _platformSettings.platformLength /_platformSettings._halfOfPlatformWidth)
+            if (_playerController.transform.position.z > currentPlatformParent.transform.position.z + _platformSettings.platformLength /_platformSettings.halfOfPlatformWidth)
             {
                 currentPlatformParent.transform.position = new Vector3(0, 0, currentPlatformParent.transform.position.z + _platformSettings.platformLength * _platformSettings.platformCount);
             }

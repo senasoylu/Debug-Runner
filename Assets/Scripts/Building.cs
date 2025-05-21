@@ -9,7 +9,6 @@ public class Building : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(_enviromentSettings == null);
         if (transform.position.z < PlayerController.Instance.transform.position.z - _enviromentSettings.distanceMovingToPlayer)
         {
             PoolManager.Instance.ReturnToPool(EnviromentSettings.BUILDING_TAG_STRING, gameObject); //   objelerini havuza döndür

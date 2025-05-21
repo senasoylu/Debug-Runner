@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private PlayerSettings _playerSettings;
 
+    private PlayerSettings _originalPlayerSettings;   // Asset'in kendisi
+    private PlayerSettings _runtimePlayerSettings;    // Kopyası, oyun içinde değişecek
+
+
     [SerializeField]
     private PlatformSettings _platformSettings;
 
@@ -26,8 +30,13 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        _originalPlayerSettings = _playerSettings;
+        _runtimePlayerSettings = Instantiate(_playerSettings);
+        _playerSettings = _runtimePlayerSettings;
+
         DOTween.SetTweensCapacity(500, 250);
-        DOTween.Init(); 
+        DOTween.Init();
     }
 
     private void OnEnable()
@@ -51,7 +60,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public PlayerSettings GetPlayerSettings()
-    { 
+    {
         return _playerSettings;
     }
 
@@ -80,9 +89,14 @@ public class PlayerController : MonoBehaviour
     {
         if (_playerSettings.currentLaneIndex < _platformSettings.laneCount - 1)
             _playerSettings.currentLaneIndex++;
-    }   
+    }
 
-    private void OnGameOver(int score) => _isGameStarted = false;
+    private void OnGameOver(int score)
+    {
+        _isGameStarted = false;
+        _playerSettings.originalForwardSpeed = _playerSettings.playerForwardSpeed;
+    }
+
  
     private void OnGameStarted() => _isGameStarted = true;
 
@@ -92,6 +106,10 @@ public class PlayerController : MonoBehaviour
         {
             StartJump();
         }
+    }
+    public void ResetSpeed()
+    {
+        _playerSettings.playerForwardSpeed = _playerSettings.originalForwardSpeed;
     }
 
     private void StartJump()

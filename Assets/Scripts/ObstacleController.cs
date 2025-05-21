@@ -12,17 +12,17 @@ public class ObstacleController : MonoBehaviour
     [SerializeField]
     private ObstacleSettings _obstacleSettings;
 
-    public float lastObstaclePositionZ;
+    private float _lastObstaclePositionZ;
     
     private void Start()
     {
-      lastObstaclePositionZ = _playerController.transform.position.z +_obstacleSettings.distanceMovingToPlayer;
+      _lastObstaclePositionZ = _playerController.transform.position.z +_obstacleSettings.distanceMovingToPlayer;
        SpawnObstacle();
     }
 
     private void Update()
     {
-        if (lastObstaclePositionZ< _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead)
+        if (_lastObstaclePositionZ< _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead)
         {
           SpawnObstacle();
         }
@@ -30,7 +30,7 @@ public class ObstacleController : MonoBehaviour
 
     private void SpawnObstacle()
     {
-        while (lastObstaclePositionZ < _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead) 
+        while (_lastObstaclePositionZ < _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead) 
         {
             List<int> allLaneIndices = new List<int>(); 
 
@@ -44,7 +44,7 @@ public class ObstacleController : MonoBehaviour
             int obstacleSpawnAmount = Random.Range(1, _platformSettings.laneCount ); 
 
             float zRandomOffset = Random.Range(_obstacleSettings.zMinDifferenceBetweenObstacles, _obstacleSettings.zMaxDifferenceBetweenObstacles);
-            float newZPosition = lastObstaclePositionZ + zRandomOffset; 
+            float newZPosition = _lastObstaclePositionZ + zRandomOffset; 
 
             for (int i = 0; i < obstacleSpawnAmount; i++)
             {
@@ -55,7 +55,7 @@ public class ObstacleController : MonoBehaviour
                 spawnedObstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
             }
 
-            lastObstaclePositionZ = newZPosition;
+            _lastObstaclePositionZ = newZPosition;
         }
     }
 }

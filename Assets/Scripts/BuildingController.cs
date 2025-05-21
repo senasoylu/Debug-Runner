@@ -28,7 +28,7 @@ public class BuildingController : MonoBehaviour
 
     public void SpawnLeftBuildings()
     {
-        while (_lastBuildingPositionZLeft < _playerController.transform.position.z +_enviromentSettings._lastBuildingPositionZTop )
+        while (_lastBuildingPositionZLeft < _playerController.transform.position.z +_enviromentSettings.lastBuildingPositionZTop )
         {
             float xLeftPosition = Random.Range(_enviromentSettings.minOnTheLeftSide, _enviromentSettings.maxOnTheLeftSide);
             float zRandomOffset = Random.Range(_enviromentSettings.minDifferenceBetweenBuilding, _enviromentSettings.maxDifferenceBetweenBuilding);
@@ -45,7 +45,7 @@ public class BuildingController : MonoBehaviour
 
     public void SpawnRightBuildings()
     {
-        while (_lastBuildingPositionZRight < _playerController.transform.position.z + _enviromentSettings._lastBuildingPositionZTop)
+        while (_lastBuildingPositionZRight < _playerController.transform.position.z + _enviromentSettings.lastBuildingPositionZTop)
         {
             float xRightPosition = Random.Range(_enviromentSettings.minOnTheRightSide, _enviromentSettings.maxOnTheRightSide);
             float yPosition = Random.Range(_enviromentSettings.minHeight, _enviromentSettings.maxHeight);

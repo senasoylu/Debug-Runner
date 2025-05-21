@@ -16,5 +16,5 @@ public class PlatformSettings : ScriptableObject
     public int laneCount = 5;
 
     public float platformLength = 100.0f;
-    public float _halfOfPlatformWidth = 2f;
+    public float halfOfPlatformWidth = 2f;
 }

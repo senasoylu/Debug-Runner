@@ -13,7 +13,7 @@ public class CollectibleController : MonoBehaviour
 
     private int _lastSelectedLaneIndex;
 
-    public float _lastCollectiblePositionZ;
+    private float _lastCollectiblePositionZ;
 
     private void Start()
     {

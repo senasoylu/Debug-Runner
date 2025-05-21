@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     public delegate void OnScoreUpdatedDelegate(int score);
     public static OnScoreUpdatedDelegate OnScoreUpdatedEvent;
 
@@ -13,7 +15,9 @@ public class GameManager : MonoBehaviour
     public static OnGameOverDelegate OnGameOverEvent;
 
     private int _score = 0;
-    private int _addScore = 10;   
+    private int _addScore = 10;
+    private float _scoreMultiplier = 1f;
+    
 
     private void OnEnable()
     {
@@ -28,6 +32,14 @@ public class GameManager : MonoBehaviour
         OnGameStartedEvent?.Invoke();
     }
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+    public void SetScoreMultiplier(float multiplier)
+    {
+        _scoreMultiplier = multiplier;
+    }
     private void OnCollectibleHit()
     {
         AddScore(+_addScore);
@@ -47,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int delta)
     {
-        _score += delta;
+        _score += Mathf.RoundToInt(delta * _scoreMultiplier);
         OnScoreUpdatedEvent?.Invoke(_score);
     }
 
@@ -55,9 +67,15 @@ public class GameManager : MonoBehaviour
     {
         RestartGame();
     }
+    public void ResetMultiplier()
+    {
+        _scoreMultiplier = 1f;
+    }
 
     public void RestartGame()
     {
+        PlayerController.Instance?.ResetSpeed(); // Hýzý sýfýrla
+        ResetMultiplier(); // Skor çarpanýný sýfýrla
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

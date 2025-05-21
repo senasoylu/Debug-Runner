@@ -12,5 +12,6 @@ public class PlayerSettings : ScriptableObject
 
     public int currentLaneIndex = 1;
 
+    public float originalForwardSpeed;
 
 }
