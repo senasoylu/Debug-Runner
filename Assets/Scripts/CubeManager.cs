@@ -6,8 +6,6 @@ public class CubeManager : MonoBehaviour
 {
     public static CubeManager Instance { get; private set; }
 
-    [SerializeField]
-    private Transform _stackFollowTarget;
 
     [SerializeField]
     private CollectibleSettings _collectibleSettings;
@@ -20,10 +18,19 @@ public class CubeManager : MonoBehaviour
 
     private int _explodeIndexCounter = 0;
 
+    [SerializeField]
+    private PlayerController _player;
+
     private void Awake()
     {
         Instance = this;
+        ListenEvent();
     }
+    private void ListenEvent()
+    {
+        CubeController.OnObstacleHitEvent += OnCubeHitObstacle;
+    }
+  
 
     public void CollectCube(GameObject collectibleObj, CubeController triggeringCube)
     {
@@ -41,7 +48,7 @@ public class CubeManager : MonoBehaviour
 
         GameObject follow = hitCube.below != null 
             ? hitCube.below.gameObject 
-            : _stackFollowTarget.gameObject;
+            : _player.gameObject;
 
         Vector3 offset = hitCube.below != null
             ? new Vector3(0, 0f, _collectibleSettings.Z_OFFSET) 
@@ -58,7 +65,7 @@ public class CubeManager : MonoBehaviour
     {
         if (_lastStackedCube == null)
         {
-            PlayerController.Instance.TriggerFall();
+            _player.TriggerFall();
             return;
         }
 
@@ -85,7 +92,7 @@ public class CubeManager : MonoBehaviour
         if (_collectedCubes.Count == 0)
         {
             GameManager.OnGameOverEvent?.Invoke(0);
-            PlayerController.Instance.TriggerFall();
+           _player.TriggerFall();
         }
     }
 
@@ -99,7 +106,7 @@ public class CubeManager : MonoBehaviour
         }
         DropFromIndex(hitCubeIndex);
     }
-
+  
     private void ExplodeCube(CubeController cube)
     {
         cube.below = null;
@@ -164,5 +171,14 @@ public class CubeManager : MonoBehaviour
                 .Append(t.DOScale(originalScale, duration));
             step++;
         }
+    }
+    private void Unsubscribe()
+    {
+        CubeController.OnObstacleHitEvent -= OnCubeHitObstacle;
+    }
+
+    private void OnDestroy()
+    {
+        Unsubscribe();
     }
 }

@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public static PlayerController Instance { get; private set; }
-
     public static System.Action OnObstacleHitEvent;
     public static System.Action OnCollectibleHitEvent;
 
@@ -13,10 +11,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private PlayerSettings _playerSettings;
-
-    private PlayerSettings _originalPlayerSettings;   // Asset'in kendisi
-    private PlayerSettings _runtimePlayerSettings;    // Kopyası, oyun içinde değişecek
-
 
     [SerializeField]
     private PlatformSettings _platformSettings;
@@ -27,13 +21,11 @@ public class PlayerController : MonoBehaviour
     private float _jumpTimer;
     private float _groundY;
 
+    private float _currentSpeed;
+
     private void Awake()
     {
-        Instance = this;
-
-        _originalPlayerSettings = _playerSettings;
-        _runtimePlayerSettings = Instantiate(_playerSettings);
-        _playerSettings = _runtimePlayerSettings;
+        _currentSpeed=_playerSettings.originalForwardSpeed;
 
         DOTween.SetTweensCapacity(500, 250);
         DOTween.Init();
@@ -57,11 +49,6 @@ public class PlayerController : MonoBehaviour
 
         GameManager.OnGameOverEvent -= OnGameOver;
         GameManager.OnGameStartedEvent -= OnGameStarted;
-    }
-
-    public PlayerSettings GetPlayerSettings()
-    {
-        return _playerSettings;
     }
 
     private void Update()
@@ -94,7 +81,6 @@ public class PlayerController : MonoBehaviour
     private void OnGameOver(int score)
     {
         _isGameStarted = false;
-        _playerSettings.originalForwardSpeed = _playerSettings.playerForwardSpeed;
     }
 
  
@@ -109,7 +95,12 @@ public class PlayerController : MonoBehaviour
     }
     public void ResetSpeed()
     {
-        _playerSettings.playerForwardSpeed = _playerSettings.originalForwardSpeed;
+        _currentSpeed = _playerSettings.playerForwardSpeed;
+    }
+
+    public void MultiplySpeed(float multiplier)
+    {
+        _currentSpeed *= multiplier;
     }
 
     private void StartJump()
@@ -149,7 +140,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveForward()
     {
-        transform.Translate(Vector3.forward * _playerSettings.playerForwardSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * _currentSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -169,15 +160,6 @@ public class PlayerController : MonoBehaviour
                 OnCollectibleHitEvent?.Invoke();
             }
         }
-    }
-
-    public void OnObstacleHitByCube(CubeController hitCube)
-    {
-        if (hitCube == null)
-        {
-            return;
-        }
-        CubeManager.Instance?.OnCubeHitObstacle(hitCube);
     }
 
     public void TriggerFall()

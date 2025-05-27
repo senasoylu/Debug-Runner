@@ -13,7 +13,7 @@ public class BuildingController : MonoBehaviour
 
     [SerializeField]
     private EnviromentSettings _enviromentSettings;
- 
+
     void Start()
     {
         _lastBuildingPositionZLeft = _playerController.transform.position.z + _enviromentSettings.distanceMovingToPlayer;
@@ -24,6 +24,13 @@ public class BuildingController : MonoBehaviour
     {
         SpawnLeftBuildings();
         SpawnRightBuildings();
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag(EnviromentSettings.BUILDING_TAG_STRING))
+        {
+            if (obj.transform.position.z < _playerController.transform.position.z - _enviromentSettings.distanceMovingToPlayer)
+            {
+                PoolManager.Instance.ReturnToPool(EnviromentSettings.BUILDING_TAG_STRING, obj);
+            }
+        }
     }
 
     public void SpawnLeftBuildings()
@@ -36,8 +43,7 @@ public class BuildingController : MonoBehaviour
             float yPosition = Random.Range(_enviromentSettings.minHeight, _enviromentSettings.maxHeight);
 
             GameObject leftSideBuilding = PoolManager.Instance.GetFromPool(EnviromentSettings.BUILDING_TAG_STRING);
-            leftSideBuilding.GetComponent<Building>().SetPlayerTransform(transform);
-           
+          
             leftSideBuilding.transform.position = new Vector3(xLeftPosition, yPosition, newZPosition);
             _lastBuildingPositionZLeft = newZPosition;
         }
@@ -53,8 +59,7 @@ public class BuildingController : MonoBehaviour
             float newZPosition = _lastBuildingPositionZRight + zRandomOffset;
 
             GameObject rightSideBuilding = PoolManager.Instance.GetFromPool(EnviromentSettings.BUILDING_TAG_STRING);
-            rightSideBuilding.GetComponent<Building>().SetPlayerTransform(transform);
-
+       
             rightSideBuilding.transform.position = new Vector3(xRightPosition, yPosition, newZPosition);
             _lastBuildingPositionZRight = newZPosition;
         }

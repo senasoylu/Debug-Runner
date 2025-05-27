@@ -19,6 +19,9 @@ public class CubeController : MonoBehaviour
     [SerializeField]
     private CollectibleSettings _collectibleSettings;
 
+    public delegate void OnObstacleHit(CubeController cube);
+    public static event OnObstacleHit OnObstacleHitEvent;
+   
     public void SetTargetStacked(GameObject target, Vector3 offset)
     {
         _target = target;
@@ -39,7 +42,7 @@ public class CubeController : MonoBehaviour
     {
         if (other.CompareTag(ObstacleSettings.OBSTACLE_TAG_STRING))
         {
-            PlayerController.Instance.OnObstacleHitByCube(this);
+            OnObstacleHitEvent?.Invoke(this);
             return;
         }
 

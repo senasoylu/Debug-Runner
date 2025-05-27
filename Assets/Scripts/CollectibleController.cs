@@ -18,13 +18,13 @@ public class CollectibleController : MonoBehaviour
     private void Start()
     {
         _lastCollectiblePositionZ = _playerController.transform.position.z + _collectibleSettings.distanceMovingToPlayer;
-      
+
         SpawnCollectibles();
     }
 
     private void Update()
     {
-        if(_lastCollectiblePositionZ<_playerController.transform.position.z+_collectibleSettings._distanceBetweenPlayerandCol)
+        if (_lastCollectiblePositionZ < _playerController.transform.position.z + _collectibleSettings._distanceBetweenPlayerandCol)
         {
             GameObject spawnedCollectible = PoolManager.Instance.GetFromPool(CollectibleSettings.COLLECTIBLE_TAG_STRING);
             SetNewPositionToCollectible(spawnedCollectible);
@@ -32,11 +32,12 @@ public class CollectibleController : MonoBehaviour
 
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag(CollectibleSettings.COLLECTIBLE_TAG_STRING))
         {
-            if (obj.transform.position.z < _playerController.transform.position.z -_collectibleSettings.distanceMovingToPlayer)
+            if (obj.transform.position.z < _playerController.transform.position.z - _collectibleSettings.distanceMovingToPlayer)
             {
                 PoolManager.Instance.ReturnToPool(CollectibleSettings.COLLECTIBLE_TAG_STRING, obj);
             }
         }
+
     }
 
     public void SpawnCollectibles()
@@ -47,7 +48,7 @@ public class CollectibleController : MonoBehaviour
         while (_lastCollectiblePositionZ < _playerController.transform.position.z + _collectibleSettings._distanceBetweenPlayerandCol)
         {
             GameObject spawnedCollectible = PoolManager.Instance.GetFromPool(CollectibleSettings.COLLECTIBLE_TAG_STRING);
-            spawnedCollectible.GetComponent<Collectible>().SetPlayerTransform(_playerController.transform);
+            //  spawnedCollectible.GetComponent<Collectible>().SetPlayerTransform(_playerController.transform);
             SetNewPositionToCollectible(spawnedCollectible);
         }
     }
@@ -79,6 +80,6 @@ public class CollectibleController : MonoBehaviour
 
         collectible.transform.position = new Vector3(xPosition, 0.5f, newZposition);
         _lastCollectiblePositionZ = collectible.transform.position.z;
-    
+
     }
 }

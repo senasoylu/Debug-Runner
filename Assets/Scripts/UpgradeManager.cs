@@ -2,24 +2,22 @@ using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour
 {
-    [SerializeField] 
-    private Transform player;
-    [SerializeField] 
-    private GameObject upgradeZonePrefab;
-    [SerializeField]
-    private float spawnDistance = 100f;
+    [SerializeField] private Transform player;
+    [SerializeField] private float upgradeTriggerZ = 100f;
+    [SerializeField] private UpgradeUIController _upgradeUIController;
 
-    private float _lastSpawnZ = 0f;
+    private bool _upgradeTriggered = false;
 
     private void Update()
     {
-        if (player == null || upgradeZonePrefab == null) return;
+        if (_upgradeTriggered || player == null) return;
 
-        if (player.position.z > _lastSpawnZ + spawnDistance)
+        if (player.position.z >= upgradeTriggerZ)
         {
-            Vector3 spawnPos = new Vector3(0f, 0f, player.position.z + 30f);
-            Instantiate(upgradeZonePrefab, spawnPos, Quaternion.identity);
-            _lastSpawnZ = player.position.z;
+            _upgradeTriggered = true;
+
+            // Oyunu durdur, UI paneli göster
+            _upgradeUIController.ShowPanel();
         }
     }
 }

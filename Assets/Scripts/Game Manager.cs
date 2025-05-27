@@ -74,7 +74,6 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        PlayerController.Instance?.ResetSpeed(); // Hýzý sýfýrla
         ResetMultiplier(); // Skor çarpanýný sýfýrla
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
