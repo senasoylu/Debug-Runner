@@ -7,16 +7,20 @@ public class UpgradeUIController : MonoBehaviour
     [SerializeField] 
     private PlayerController _playerController;
 
+    [SerializeField]
+    private GameManager _gameManager;
+
     [SerializeField] 
     private GameObject _upgradePanel;
+
     [SerializeField] 
     private Button _speedButton;
+
     [SerializeField]
     private Button _scoreButton;
 
     private void Awake()
     {
-        // Singleton eriþimi
         if (Instance == null)
             Instance = this;
 
@@ -44,24 +48,23 @@ public class UpgradeUIController : MonoBehaviour
     }
     private System.Collections.IEnumerator ResetSpeedAfterDelay(float delay, float multiplier)
     {
-        yield return new WaitForSecondsRealtime(delay); // zaman dursa bile iþler
+        yield return new WaitForSeconds(delay); // zaman dursa bile iþler
       _playerController.MultiplySpeed(multiplier);
     }
     private void ChooseScore()
     {
         Debug.Log("Puan x2 seçildi");
 
-        GameManager.Instance.SetScoreMultiplier(2f);
+        _gameManager.SetScoreMultiplier(2f);
         StartCoroutine(ResetScoreMultiplierAfterDelay(10f));
 
         ResumeGame();
     }
     private System.Collections.IEnumerator ResetScoreMultiplierAfterDelay(float delay)
     {
-        yield return new WaitForSecondsRealtime(delay);
+        yield return new WaitForSeconds(delay);
 
-        Debug.Log("Puan çarpaný normale döndü.");
-        GameManager.Instance.SetScoreMultiplier(1f);
+        _gameManager.SetScoreMultiplier(1f);
     }
 
     private void ResumeGame()
