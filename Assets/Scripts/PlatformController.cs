@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlatformController : MonoBehaviour
 {
     [SerializeField]
-    private PlayerController _playerController;
+    private PlayerNavigationData _playerNavigationData;
 
     [SerializeField]
     private PlatformSettings _platformSettings;
@@ -54,7 +54,7 @@ public class PlatformController : MonoBehaviour
     {
         foreach (GameObject currentPlatformParent in _platformParentObjects)
         {
-            if (_playerController.transform.position.z > currentPlatformParent.transform.position.z + _platformSettings.platformLength /_platformSettings.halfOfPlatformWidth)
+            if (_playerNavigationData.GetPlayerPosition().z > currentPlatformParent.transform.position.z + _platformSettings.platformLength /_platformSettings.halfOfPlatformWidth)
             {
                 currentPlatformParent.transform.position = new Vector3(0, 0, currentPlatformParent.transform.position.z + _platformSettings.platformLength * _platformSettings.platformCount);
             }

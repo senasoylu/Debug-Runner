@@ -24,10 +24,8 @@ public class UpgradeUIController : MonoBehaviour
         if (Instance == null)
             Instance = this;
 
-        // Panel baþlangýçta kapalý olsun
         _upgradePanel.SetActive(false);
 
-        // Butonlara týklanýnca ne olacak?
         _speedButton.onClick.AddListener(ChooseSpeed);
         _scoreButton.onClick.AddListener(ChooseScore);
     }
@@ -40,8 +38,6 @@ public class UpgradeUIController : MonoBehaviour
 
     private void ChooseSpeed()
     {
-
-        Debug.Log("Hýz x2 seçildi");
         _playerController.MultiplySpeed(2f);
         StartCoroutine(ResetSpeedAfterDelay(10f, 0.5f));
         ResumeGame();
@@ -53,8 +49,6 @@ public class UpgradeUIController : MonoBehaviour
     }
     private void ChooseScore()
     {
-        Debug.Log("Puan x2 seçildi");
-
         _gameManager.SetScoreMultiplier(2f);
         StartCoroutine(ResetScoreMultiplierAfterDelay(10f));
 

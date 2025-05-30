@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 30970122}
   - component: {fileID: 30970121}
   m_Layer: 0
-  m_Name: Obstacles
+  m_Name: ObstacleController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,9 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89d5b7b5db3490144973b242cd9eb5fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerController: {fileID: 1696957043}
   _platformSettings: {fileID: 11400000, guid: f28a1ec11b8d24442a42af11f6c5a512, type: 2}
   _obstacleSettings: {fileID: 11400000, guid: 17676e6452d30e54e9a75f85bdd03536, type: 2}
+  _playerNavigationData: {fileID: 11400000, guid: 6fec7cedd7c7ab04182290c8f8cffc47, type: 2}
 --- !u!4 &30970122
 Transform:
   m_ObjectHideFlags: 0
@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9dd04516ce2f594995b71649f9f3f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerController: {fileID: 1696957043}
+  _playerNavigationData: {fileID: 11400000, guid: 6fec7cedd7c7ab04182290c8f8cffc47, type: 2}
   _platformSettings: {fileID: 11400000, guid: f28a1ec11b8d24442a42af11f6c5a512, type: 2}
   _platformParentObjects: []
 --- !u!1 &634629145
@@ -1267,7 +1267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d356dabcb1e7454b8f237d14adc1331, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerController: {fileID: 1696957043}
+  _playerNavigationData: {fileID: 11400000, guid: 6fec7cedd7c7ab04182290c8f8cffc47, type: 2}
   _enviromentSettings: {fileID: 11400000, guid: 389f4970e52ac574bbdda9712b23f557, type: 2}
 --- !u!4 &1255988879
 Transform:
@@ -1430,7 +1430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _platformSettings: {fileID: 11400000, guid: f28a1ec11b8d24442a42af11f6c5a512, type: 2}
   _collectibleSettings: {fileID: 11400000, guid: edcf14397c2ed414c9bc7cf412cbfe17, type: 2}
-  _playerController: {fileID: 1696957043}
+  _playerNavigationData: {fileID: 11400000, guid: 6fec7cedd7c7ab04182290c8f8cffc47, type: 2}
 --- !u!4 &1285514219
 Transform:
   m_ObjectHideFlags: 0
@@ -1816,6 +1816,7 @@ MonoBehaviour:
   _animator: {fileID: 1696957045}
   _playerSettings: {fileID: 11400000, guid: deb0113d2533d0043b09e96d7bc69220, type: 2}
   _platformSettings: {fileID: 11400000, guid: f28a1ec11b8d24442a42af11f6c5a512, type: 2}
+  _playerNavigationData: {fileID: 11400000, guid: 6fec7cedd7c7ab04182290c8f8cffc47, type: 2}
 --- !u!54 &1696957044
 Rigidbody:
   m_ObjectHideFlags: 0

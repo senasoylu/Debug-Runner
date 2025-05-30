@@ -4,31 +4,31 @@ using UnityEngine;
 public class ObstacleController : MonoBehaviour
 {
     [SerializeField]
-    private PlayerController _playerController;
-
-    [SerializeField]
     private PlatformSettings _platformSettings;
 
     [SerializeField]
     private ObstacleSettings _obstacleSettings;
 
+    [SerializeField]
+   private PlayerNavigationData _playerNavigationData;
+
     private float _lastObstaclePositionZ;
     
     private void Start()
     {
-      _lastObstaclePositionZ = _playerController.transform.position.z +_obstacleSettings.distanceMovingToPlayer;
+      _lastObstaclePositionZ = _playerNavigationData.GetPlayerPosition().z +_obstacleSettings.distanceMovingToPlayer;
        SpawnObstacle();
     }
 
     private void Update()
     {
-        if (_lastObstaclePositionZ< _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead)
+        if (_lastObstaclePositionZ< _playerNavigationData.GetPlayerPosition().z + _obstacleSettings.maxSpawnDistanceAhead)
         {
           SpawnObstacle();
         }
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag(ObstacleSettings.OBSTACLE_TAG_STRING))
         {
-            if (obj.transform.position.z < _playerController.transform.position.z - _obstacleSettings.distanceMovingToPlayer)
+            if (obj.transform.position.z < _playerNavigationData.GetPlayerPosition().z - _obstacleSettings.distanceMovingToPlayer)
             {
                 PoolManager.Instance.ReturnToPool(ObstacleSettings.OBSTACLE_TAG_STRING, obj);
             }
@@ -37,7 +37,7 @@ public class ObstacleController : MonoBehaviour
 
     private void SpawnObstacle()
     {
-        while (_lastObstaclePositionZ < _playerController.transform.position.z + _obstacleSettings.maxSpawnDistanceAhead) 
+        while (_lastObstaclePositionZ < _playerNavigationData.GetPlayerPosition().z + _obstacleSettings.maxSpawnDistanceAhead) 
         {
             List<int> allLaneIndices = new List<int>(); 
 
@@ -62,6 +62,13 @@ public class ObstacleController : MonoBehaviour
             }
 
             _lastObstaclePositionZ = newZPosition;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") || other.CompareTag("Collector"))
+        {
+            CubeManager.Instance?.DropLastCube();
         }
     }
 }

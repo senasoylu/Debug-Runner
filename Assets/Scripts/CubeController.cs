@@ -21,14 +21,17 @@ public class CubeController : MonoBehaviour
 
     public delegate void OnObstacleHit(CubeController cube);
     public static event OnObstacleHit OnObstacleHitEvent;
-   
+
+
+    private bool _isCollected = false;
+
     public void SetTargetStacked(GameObject target, Vector3 offset)
     {
         _target = target;
         _offset = offset;
     }
-
-    void LateUpdate()
+    
+    private void LateUpdate()
     {
         if (_target == null)
         {
@@ -48,11 +51,18 @@ public class CubeController : MonoBehaviour
 
         if (CompareTag(CollectibleSettings.COLLECTOR_TAG_STRING) && other.CompareTag(CollectibleSettings.COLLECTIBLE_TAG_STRING))
         {
-            if (other.gameObject == gameObject)
-            {
-                return; 
-            }
+            if (other.gameObject == gameObject) return;
+
             CubeManager.Instance.CollectCube(other.gameObject, this);
+            return;
+        }
+
+        if (!_isCollected && other.CompareTag("Player"))
+        {
+            _isCollected = true;
+            CubeManager.Instance.CollectCube(gameObject, this);
+
+            PlayerController.OnCollectibleHitEvent?.Invoke();
         }
     }
 }

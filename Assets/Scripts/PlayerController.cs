@@ -1,10 +1,12 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using UnityEngine;
-
 public class PlayerController : MonoBehaviour
 {
     public static System.Action OnCollectibleHitEvent;
-    public static System.Action OnTriggerFallEvent; 
+    public static System.Action OnTriggerFallEvent;
+
+    public static event Action<Vector3> OnPositionChangeEvent;
 
     [SerializeField]
     private Animator _animator;
@@ -23,6 +25,10 @@ public class PlayerController : MonoBehaviour
 
     private float _currentSpeed;
 
+    [SerializeField]
+    private PlayerNavigationData _playerNavigationData;
+
+
     private void Awake()
     {
         _currentSpeed=_playerSettings.originalForwardSpeed;
@@ -39,6 +45,9 @@ public class PlayerController : MonoBehaviour
 
         GameManager.OnGameOverEvent += OnGameOver;
         GameManager.OnGameStartedEvent += OnGameStarted;
+        _playerNavigationData.Subscribe();
+        OnPositionChangeEvent?.Invoke(transform.position);
+
     }
 
     private void OnDisable()
@@ -49,6 +58,7 @@ public class PlayerController : MonoBehaviour
 
         GameManager.OnGameOverEvent -= OnGameOver;
         GameManager.OnGameStartedEvent -= OnGameStarted;
+        _playerNavigationData.Unsubscribe();
     }
 
     private void Update()
@@ -92,6 +102,12 @@ public class PlayerController : MonoBehaviour
             StartJump();
         }
     }
+
+    public Vector3 GetPlayerPosition()
+    {
+        return transform.position;
+    }
+
     public void ResetSpeed()
     {
         _currentSpeed = _playerSettings.playerForwardSpeed;
@@ -140,24 +156,7 @@ public class PlayerController : MonoBehaviour
     private void MoveForward()
     {
         transform.Translate(Vector3.forward * _currentSpeed * Time.deltaTime);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag(ObstacleSettings.OBSTACLE_TAG_STRING))
-        {
-            CubeManager.Instance?.DropLastCube(); 
-        }
-
-        else if (other.CompareTag(CollectibleSettings.COLLECTIBLE_TAG_STRING))
-        {
-            var cube = other.GetComponent<CubeController>();
-            if (cube != null)
-            {
-                CubeManager.Instance?.CollectCube(other.gameObject, cube);
-                OnCollectibleHitEvent?.Invoke();
-            }
-        }
+        OnPositionChangeEvent?.Invoke(transform.position);
     }
 
     public void TriggerFall()

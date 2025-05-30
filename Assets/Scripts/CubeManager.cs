@@ -34,7 +34,6 @@ public class CubeManager : MonoBehaviour
         CubeController.OnObstacleHitEvent += OnCubeHitObstacle;
     }
   
-
     public void CollectCube(GameObject collectibleObj, CubeController triggeringCube)
     {
         CubeController hitCube = collectibleObj.GetComponent<CubeController>();
