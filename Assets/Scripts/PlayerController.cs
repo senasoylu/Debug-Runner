@@ -25,10 +25,6 @@ public class PlayerController : MonoBehaviour
 
     private float _currentSpeed;
 
-    [SerializeField]
-    private PlayerNavigationData _playerNavigationData;
-
-
     private void Awake()
     {
         _currentSpeed=_playerSettings.originalForwardSpeed;
@@ -45,7 +41,6 @@ public class PlayerController : MonoBehaviour
 
         GameManager.OnGameOverEvent += OnGameOver;
         GameManager.OnGameStartedEvent += OnGameStarted;
-        _playerNavigationData.Subscribe();
         OnPositionChangeEvent?.Invoke(transform.position);
 
     }
@@ -58,7 +53,6 @@ public class PlayerController : MonoBehaviour
 
         GameManager.OnGameOverEvent -= OnGameOver;
         GameManager.OnGameStartedEvent -= OnGameStarted;
-        _playerNavigationData.Unsubscribe();
     }
 
     private void Update()

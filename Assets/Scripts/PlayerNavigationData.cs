@@ -5,9 +5,8 @@ public class PlayerNavigationData : ScriptableObject
 {
     private Vector3 _playerPosition;
 
-    public void Subscribe()
+    private void OnEnable()
     {
-        Debug.Log("ASSAS");
         PlayerController.OnPositionChangeEvent += OnPositionChange;
     }
 
@@ -21,9 +20,8 @@ public class PlayerNavigationData : ScriptableObject
         return _playerPosition;
     }
 
-    public void Unsubscribe()
+    private void OnDisable()
     {
-        Debug.Log("ahhaha");
         PlayerController.OnPositionChangeEvent -= OnPositionChange;
     }
 }
