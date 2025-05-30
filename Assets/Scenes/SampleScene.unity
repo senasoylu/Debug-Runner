@@ -717,6 +717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerController: {fileID: 1696957043}
+  _gameManager: {fileID: 1564722892}
   _upgradePanel: {fileID: 1973583053}
   _speedButton: {fileID: 1203608829}
   _scoreButton: {fileID: 2015279471}
@@ -1220,6 +1221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1696957046}
   upgradeTriggerZ: 100
+  nextUpgradeTriggerZ: 100
   _upgradeUIController: {fileID: 848191012}
 --- !u!4 &1237457064
 Transform:
@@ -1381,6 +1383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collectibleSettings: {fileID: 11400000, guid: edcf14397c2ed414c9bc7cf412cbfe17, type: 2}
   _player: {fileID: 1696957043}
+  _gameManager: {fileID: 1564722892}
 --- !u!4 &1270789414
 Transform:
   m_ObjectHideFlags: 0

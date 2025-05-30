@@ -21,6 +21,9 @@ public class CubeManager : MonoBehaviour
     [SerializeField]
     private PlayerController _player;
 
+    [SerializeField]
+    private GameManager _gameManager;
+
     private void Awake()
     {
         Instance = this;
@@ -91,8 +94,7 @@ public class CubeManager : MonoBehaviour
 
         if (_collectedCubes.Count == 0)
         {
-            GameManager.OnGameOverEvent?.Invoke(0);
-           _player.TriggerFall();
+            _player.TriggerFall();
         }
     }
 

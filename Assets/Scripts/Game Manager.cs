@@ -3,27 +3,24 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
-
     public delegate void OnScoreUpdatedDelegate(int score);
-    public static OnScoreUpdatedDelegate OnScoreUpdatedEvent;
+    public static event OnScoreUpdatedDelegate OnScoreUpdatedEvent;
 
     public delegate void OnGameStartedDelegate();
-    public static OnGameStartedDelegate OnGameStartedEvent;
+    public static event OnGameStartedDelegate OnGameStartedEvent;
 
     public delegate void OnGameOverDelegate(int score);
-    public static OnGameOverDelegate OnGameOverEvent;
+    public static event OnGameOverDelegate OnGameOverEvent;
 
     private int _score = 0;
     private int _addScore = 10;
     private float _scoreMultiplier = 1f;
     
-
     private void OnEnable()
     {
-        PlayerController.OnObstacleHitEvent += OnObstacleHit;
         PlayerController.OnCollectibleHitEvent += OnCollectibleHit;
         UIManager.OnRestartButtonClickedEvent += OnRestartButtonClicked;
+        PlayerController.OnTriggerFallEvent += OnTriggerFall;
     }
 
     private void Start()
@@ -32,31 +29,19 @@ public class GameManager : MonoBehaviour
         OnGameStartedEvent?.Invoke();
     }
 
-    private void Awake()
-    {
-        Instance = this;
-    }
     public void SetScoreMultiplier(float multiplier)
     {
         _scoreMultiplier = multiplier;
     }
+
     private void OnCollectibleHit()
     {
         AddScore(+_addScore);
     }
-
-    private void OnObstacleHit()
+    public void OnTriggerFall()
     {
-        if (_score >= _addScore)
-        {
-            AddScore(-_addScore);
-        }
-        else
-        {
-            OnGameOverEvent?.Invoke(_score);
-        }
+        OnGameOverEvent?.Invoke(_score);
     }
-
     public void AddScore(int delta)
     {
         _score += Mathf.RoundToInt(delta * _scoreMultiplier);
@@ -74,14 +59,14 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        ResetMultiplier(); // Skor çarpanýný sýfýrla
+        ResetMultiplier(); 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void OnDisable()
     {
-        PlayerController.OnObstacleHitEvent -= OnObstacleHit;
         PlayerController.OnCollectibleHitEvent -= OnCollectibleHit;
         UIManager.OnRestartButtonClickedEvent -= OnRestartButtonClicked;
+        PlayerController.OnTriggerFallEvent -= OnTriggerFall;
     }
 }

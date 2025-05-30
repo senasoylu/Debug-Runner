@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public static System.Action OnObstacleHitEvent;
     public static System.Action OnCollectibleHitEvent;
+    public static System.Action OnTriggerFallEvent; 
 
     [SerializeField]
     private Animator _animator;
@@ -83,7 +83,6 @@ public class PlayerController : MonoBehaviour
         _isGameStarted = false;
     }
 
- 
     private void OnGameStarted() => _isGameStarted = true;
 
     private void OnJump()
@@ -147,7 +146,6 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag(ObstacleSettings.OBSTACLE_TAG_STRING))
         {
-            OnObstacleHitEvent?.Invoke();
             CubeManager.Instance?.DropLastCube(); 
         }
 
@@ -165,6 +163,7 @@ public class PlayerController : MonoBehaviour
     public void TriggerFall()
     {
         _animator.SetBool("isFalling", true);
-        _isGameStarted = false;
+        _isGameStarted = false; 
+        OnTriggerFallEvent?.Invoke();   
     }
 }

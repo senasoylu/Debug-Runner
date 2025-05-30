@@ -26,6 +26,13 @@ public class ObstacleController : MonoBehaviour
         {
           SpawnObstacle();
         }
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag(ObstacleSettings.OBSTACLE_TAG_STRING))
+        {
+            if (obj.transform.position.z < _playerController.transform.position.z - _obstacleSettings.distanceMovingToPlayer)
+            {
+                PoolManager.Instance.ReturnToPool(ObstacleSettings.OBSTACLE_TAG_STRING, obj);
+            }
+        }
     }
 
     private void SpawnObstacle()
@@ -51,7 +58,6 @@ public class ObstacleController : MonoBehaviour
                 float xPosition = _platformSettings.firstLanePositionX + allLaneIndices[i] * _platformSettings.distanceBetweenLanes;
                 GameObject spawnedObstacle = PoolManager.Instance.GetFromPool(ObstacleSettings.OBSTACLE_TAG_STRING);
 
-                spawnedObstacle.GetComponent<Obstacle>().SetPlayerTransform(_playerController.transform);
                 spawnedObstacle.transform.position = new Vector3(xPosition, 0, newZPosition);
             }
 
